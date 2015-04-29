@@ -61,6 +61,7 @@ module.exports = (function() {
   app.set('view engine', 'ejs');
 
   app.use(express.static(__dirname + config.publicDir));
+  app.use(express.static(config.dataDir + config.publicDir));
 
   app.use(errorhandler());
 
