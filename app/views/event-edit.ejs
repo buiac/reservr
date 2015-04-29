@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>
+    reservr - Event edit
+  </title>
+
+  <link rel="stylesheet" href="/bower_components/foundation/css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/foundation/css/foundation.css">
+</head>
+<body>
+
+  <nav class="top-bar" data-topbar>
+    <ul class="title-area">
+      <li class="name">
+        <h1>
+          <a href="/dashboard">reservr dashboard</a>
+        </h1>
+      </li>
+    </ul>
+  </nav>
+
+  <h3>Edit event</h3>
+  
+  <form method="post" action="/dashboard/event" enctype="multipart/form-data">
+    
+    <div class="row">
+      
+      <div class="large-8 columns">
+        
+        <% if (errors.length) { %>
+        
+        <div data-alert class="alert-box warning">
+            
+            <% for(var i = 0; i < errors.length; i++) {%>
+               
+               <p><%= errors[i].msg %></p>
+
+            <% } %>
+
+          <a href="" class="close">&times;</a>
+
+        </div>
+
+        <% } %>
+        
+      </div> 
+
+    </div>
+
+    <div class="row">
+      <div class="large-4 columns">
+    
+        <label>Event name:
+
+          <input type="text" placeholder="" name="name" value="<%= theEvent.name || '' %>" />
+
+        </label>
+        
+
+        <label>Event description:
+
+          <textarea name="description" rows="12"><%= theEvent.description || '' %></textarea>
+
+        </label>
+
+        <label>
+          Event image:
+
+          <input type="file" name="image" >
+        </label>
+
+        <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
+
+        <button class="button tiny" type="submit">Submit</button>
+        
+        <% if (theEvent._id) { %>
+
+          <a href="/dashboard/eventdelete/<%= theEvent._id %>" class="button alert tiny">Delete event</a>
+
+        <% } %>
+        
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-4 columns">
+        
+        <label>
+          Event date:
+
+          <input type="date" name="date" >
+        </label>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+      
+      <div class="large-4 columns">
+        
+        <label>
+          Event time:
+
+          
+        </label>
+
+      </div>
+
+    </div>
+    
+  </form>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/foundation/js/foundation.min.js"></script>
+
+</body>
+</html>

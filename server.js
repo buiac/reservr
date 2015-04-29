@@ -10,12 +10,16 @@ module.exports = (function() {
   var async = require('async');
   var fs = require('fs');
   var knox = require('knox');
+  var multer = require('multer');
 
   var bodyParser = require('body-parser');
   var errorhandler = require('errorhandler');
   var basicAuth = require('basic-auth-connect');
 
   var app = express();
+
+  // validation library for whatever comes in through the forms
+  var expressValidator = require('express-validator');
 
   // configs
   var config = require('./config/config.js');
@@ -24,7 +28,7 @@ module.exports = (function() {
   var adminAuth = function(req, res, next) {
     
     if(!process.env.OPENSHIFT_APP_NAME) {
-      next();
+      return next();
     }
     
     return basicAuth(function(user, pass) {
@@ -43,6 +47,16 @@ module.exports = (function() {
     extended: true
   }));
 
+  // config file uploads folder
+  app.use(multer({ 
+    dest: './data/media/',
+    rename: function (fieldname, filename) {
+      return filename;
+    }
+  }));
+
+  app.use(expressValidator());
+
   app.set('views', __dirname + '/app/views');
   app.set('view engine', 'ejs');
 
@@ -52,15 +66,30 @@ module.exports = (function() {
 
   // datastore
   var Datastore = require('nedb');
+  
   var db = new Datastore({
     filename: config.dataDir + config.dbDir + '/reservr.db',
     autoload: true
   });
 
-  // main
-  var main = require('./app/controllers/main.js')(config, db);
+  // events datastore
+  db.events = new Datastore({
+    filename: config.dataDir + config.dbDir + '/events.db',
+    autoload: true
+  });
 
+  // controllers
+  var main = require('./app/controllers/main.js')(config, db);
+  var dashboard = require('./app/controllers/dashboard.js')(config, db);
+
+  // routes
   app.get('/', adminAuth, main.view);
+  app.get('/dashboard', adminAuth, dashboard.view);
+  app.get('/dashboard/event', adminAuth, dashboard.eventEditView);
+  app.get('/dashboard/event/:eventId', adminAuth, dashboard.eventEditView);
+  app.post('/dashboard/event', dashboard.eventCreate);
+  app.get('/dashboard/eventdelete/:eventId', dashboard.eventDelete);
+
 
   // start express server
   app.listen(config.port, config.ipAddress, function() {
