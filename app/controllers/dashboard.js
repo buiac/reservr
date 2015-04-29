@@ -102,13 +102,17 @@ module.exports = (function(config, db) {
     var eventId = (req.body._id) ? req.body._id.trim() : '';
     var image = (req.files.image) ? req.files.image.originalname : '';
 
-
+    // TODO use array of objects for images, maybe we'll need descriptions
+    
     var theEvent = {
       name: name,
       description: description,
       _id: eventId || '',
-      image: image
+      image: image,
+      date: new Date(req.body.date)
     };
+    
+    console.log(theEvent);
 
     if (errors) {
 

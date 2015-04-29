@@ -48,8 +48,8 @@ module.exports = (function() {
   }));
 
   // config file uploads folder
-  app.use(multer({ 
-    dest: './data/media/',
+  app.use(multer({
+    dest: config.dataDir + config.publicDir + '/media',
     rename: function (fieldname, filename) {
       return filename;
     }
@@ -80,11 +80,13 @@ module.exports = (function() {
   });
 
   // controllers
-  var main = require('./app/controllers/main.js')(config, db);
+  var index = require('./app/controllers/index.js')(config, db);
   var dashboard = require('./app/controllers/dashboard.js')(config, db);
 
-  // routes
-  app.get('/', adminAuth, main.view);
+  // public routes
+  app.get('/', index.view);
+  
+  // dashboard
   app.get('/dashboard', adminAuth, dashboard.view);
   app.get('/dashboard/event', adminAuth, dashboard.eventEditView);
   app.get('/dashboard/event/:eventId', adminAuth, dashboard.eventEditView);
