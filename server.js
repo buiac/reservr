@@ -24,7 +24,7 @@ module.exports = (function() {
   var adminAuth = function(req, res, next) {
     
     if(!process.env.OPENSHIFT_APP_NAME) {
-      next();
+      return next();
     }
     
     return basicAuth(function(user, pass) {
@@ -47,6 +47,7 @@ module.exports = (function() {
   app.set('view engine', 'ejs');
 
   app.use(express.static(__dirname + config.publicDir));
+  app.use(express.static(config.dataDir + config.publicDir));
 
   app.use(errorhandler());
 

@@ -1,0 +1,203 @@
+/* reservr
+ */
+
+body {
+  background: #f3f3f3;
+}
+
+.header {
+  padding: 20px 0;
+  background: #000;
+}
+
+.logo {
+  opacity: .9;
+}
+
+.logo:hover {
+  opacity: 1;
+}
+
+.logo-reservr {
+  display: block;
+  width: 80px;
+  margin: 0 8px 0 0;
+  
+  opacity: .5;
+}
+
+.logo-reservr,
+.logo-client {
+  display: inline-block;
+  
+  vertical-align: middle;
+}
+
+/* nav
+ */
+
+.menu-header {
+  background: #ffdd08;
+  
+  color: #333;
+}
+
+.menu-header .sub-nav {
+  margin: 0;
+  padding: 0;
+}
+
+.menu-header .sub-nav dt {
+  text-transform: none;
+  
+  color: #333;
+}
+
+.menu-header .sub-nav dd a {
+  color: #333;
+  font-weight: bold;
+}
+
+.menu-header .sub-nav dd a:hover {
+  text-decoration: underline;
+}
+
+.menu-header .sub-nav dd.active a {
+  background: #333;
+  
+  color: #fff;
+}
+
+/* event
+ */
+
+.event {
+  overflow: hidden;
+  position: relative;
+  padding: 60px 0;
+}
+
+.event:after {
+  content: '';
+  display: block;
+  width: 30%;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  border-bottom: 1px solid #bdc3c7;
+  
+  transform: translateX(-50%);
+}
+
+.event-slider {
+}
+
+.event-meta {
+  margin-bottom: 20px;
+  
+  color: #666;
+  font-size: 14px;
+}
+
+.event-meta .fa {
+  opacity: .5;
+}
+
+.event-description {
+  overflow: hidden;
+  max-height: 200px;
+  
+  text-overflow: ellipsis;
+}
+
+.event-description--show {
+  max-height: none;
+}
+
+.event-toggle-description {
+  display: block;
+  position: relative;
+  padding: 5px 0;
+  
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+}
+
+.event-toggle-description:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: 30px;
+  border-bottom: 1px dotted #bdc3c7;
+  
+  transform: translateX(-50%);
+}
+
+.event-toggle-description-hide {
+  display: none;
+}
+
+.event-description--show + .event-toggle-description .event-toggle-description-show {
+  display: none;
+}
+
+.event-description--show + .event-toggle-description .event-toggle-description-hide {
+  display: block;
+}
+
+.row.reserve-actions {
+  margin-top: 1rem;
+}
+
+.container-reserve {
+  display: block;
+  width: 100%;
+  background: #ffdd08;
+  
+  color: #333;
+}
+
+.container-reserve-btn {
+  padding: 1rem 2rem;
+  
+  text-align: center;
+  cursor: pointer;
+}
+
+.container-reserve-btn:hover {
+  background: #CDBC53;
+}
+
+.container-reserve-form {
+  display: none;
+  padding: 1rem;
+}
+
+.container-reserve--active .container-reserve-form {
+  display: block;
+}
+
+.container-reserve--active .container-reserve-btn {
+  display: none;
+}
+
+.free-seats {
+  color: #666;
+  font-size: 14px;
+  line-height: 3rem;
+  vertical-align: middle;
+}
+
+/* footer
+ */
+
+.footer {
+  padding: 80px 0 40px;
+  
+  color: #bdc3c7;
+  font-size: 14px;
+  text-align: center;
+}

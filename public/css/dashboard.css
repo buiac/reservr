@@ -1,0 +1,17 @@
+/* reservr dashboard
+ */
+
+.header {
+  border-bottom: 4px solid #ffdd08;
+}
+
+.btn-event-new {
+  float: right;
+  
+  color: #fff;
+  font-size: 30px;
+}
+
+.btn-event-new:hover {
+  color:  #ffdd08;
+}
