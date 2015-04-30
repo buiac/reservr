@@ -99,7 +99,18 @@ module.exports = (function(config, db) {
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
 
             // shorten reservation url
-            bitly.shorten('http://reactor.reserver.net/' + theEvent._id + newReservation._id, function(err, response) {
+            var longUrl;
+            if(!process.env.OPENSHIFT_APP_NAME) {
+              
+              longUrl = 'http://localhost:8080/' + theEvent._id + '/' + newReservation._id;
+            
+            } else {
+
+              longUrl = 'http://reactor.reserver.net/' + theEvent._id + '/' + newReservation._id;
+
+            }
+
+            bitly.shorten(longUrl, function(err, response) {
 
               if (err) {
                 
@@ -121,6 +132,8 @@ module.exports = (function(config, db) {
                 text: userEmailSetup.text
 
               }, function (err, info) {
+
+                console.log('user email');
                 
                 console.log(err);
                 console.log(info);
@@ -148,6 +161,7 @@ module.exports = (function(config, db) {
               text: ownerEmailSetup.text
             }, function (err, info) {
               
+              console.log('owner email');
               console.log(err);
               console.log(info);  
               

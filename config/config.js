@@ -12,7 +12,7 @@ module.exports = (function() {
     dataDir: process.env.OPENSHIFT_DATA_DIR || process.cwd() + '/data',
     publicDir: '/public',
     dbDir: '/db',
-    email: 'contact@reservr.net'
+    email: 'Rezervari <contact@reservr.net>'
   };
 
   // read admin user credentials
