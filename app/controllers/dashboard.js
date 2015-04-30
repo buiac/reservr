@@ -130,7 +130,7 @@ module.exports = (function(config, db) {
       description: description,
       _id: eventId || '',
       images: images,
-      date: new Date(req.body.date),
+      date: req.body.date,
       seats: seats
     };
 
