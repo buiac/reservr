@@ -13,6 +13,7 @@ module.exports = (function(config, db) {
   var moment = require('moment');
   var marked = require('marked');
   
+  moment.defaultFormat = 'YYYY-MM-DD';
 
   var eventEditView = function(req, res, next) {
 
@@ -41,7 +42,9 @@ module.exports = (function(config, db) {
 
       res.render('event-edit', {
         errors: [],
-        theEvent: {}
+        theEvent: {
+          date: moment().format()
+        }
       });
 
     }

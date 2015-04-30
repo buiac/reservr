@@ -1,85 +1,114 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>
-    reservr - dashboard
-  </title>
-
-  <link rel="stylesheet" href="/bower_components/foundation/css/normalize.css">
-  <link rel="stylesheet" href="/bower_components/foundation/css/foundation.css">
-</head>
-<body>
-
-  <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <li class="name">
-        <h1>
-          <a href="/dashboard">reservr dashboard</a>
-        </h1>
-      </li>
-    </ul>
-  </nav>
-
-  <div class="row">
-    <div class="large-10 columns">
-      
-      <h3>List of all the events</h3>
-
-    </div>
-
-    <div class="large-2 columns">
-      <a href="/dashboard/event" class="button small">New Event</a>
-    </div>
-  </div>
+<%- include dashboard-header %>
   
-  <div class="row">
-    <div class="large-12 columns">
+  
+<div class="events-list">
+  
+  <% if (!events.length) { %>
+  
+    <h2 class="subheader text-center">
+      No events yet. Go ahead and <a href="/dashboard/event">add one</a>.
+    </h2>
+  
+  <% } else { %>
 
-      <% if (events.length) { %>
+    <div class="row">
+      <div class="large-10 columns">
+        
+        <h3>Events</h3>
+
+      </div>
+    </div>
+    
+        
+    <% events.forEach(function(event){ %>
       
-      <ul>
-       
-        <% events.forEach(function(event){ %>
-                      
-          <li> 
 
-            <a href="/dashboard/event/<%= event._id %>"> 
-              <%= event.name %> | <%= event.seats %>
-            </a>
+      <div class="row event">
+      
+        <div class="small-4 column">
+        
+          <div class="event-slider">
 
-            <div>
-              <%- event.description %>
-            </div>
             
-            <% if (event.images) {%>
-              <% event.images.forEach(function(image){ %>
-              <div style="max-width: 300px">
-
-                <img style="max-width: 100%" src="<%= image.path %>" alt="">
-
-              </div>
+            <ul class="clearing-thumbs clearing-feature" data-clearing>
               
+              <% event.images.forEach(function(image, i){  %>
+                
+                <li class="clearing-featured-img">
+                  
+                  <img src="<%= image.path %>">
+                
+                </li>
+
               <% }) %>
 
-            <% } %>
-          </li>
-
-        <% }) %>  
-
-      </ul>
-
-      <% } else { %>
+            </ul>
+            
+          </div>
         
-        <p>No events yet. Go ahead and <a href="/dashboard/event">add one.</a></p>
-      <% } %>
-    </div>
-  </div>
+        </div>
+      
+        <div class="small-6 columns event-details">
+          
+          <a href="/dashboard/event/<%= event._id %>"> 
+            <h2>
+              <%= event.name %>
+            </h2>
+          </a>
+          
+          <div class="row">
+            
+            <div class="small-6 columns event-meta">
+              <i class="fa fa-clock-o"></i>
+              
+              Vineri, 24 aprilie, ora 20.00
+            </div>
+          
+            <div class="small-6 columns event-meta">
+              <i class="fa fa-map-marker"></i>
+              
+              #Sound Reactor
+            </div>
+            
+          </div>
+          
+        <div class="event-description">
+            <%- marked(event.description) %>
+          </div>
+          
+          <% if(event.description.length > 300) { %>
+          
+            <a class="event-toggle-description">
+              <span class="event-toggle-description-show">
+                vezi descrierea completă
+              </span>
+              <span class="event-toggle-description-hide">
+                ascunde descrierea completă
+              </span>
+            </a>
+            
+          <% } %>
+            
+        </div>
+        
+        <div class="small-2 columns">
+          
+          <a href="/dashboard/event/<%= event._id %>" class="button">
+            Edit
+          </a>
+          
+          <a href="#" class="button">
+            Rezervari
+          </a>
+          
+        </div>
+      
+      </div>
 
+    <% }) %>
+    
+  <% } %>
+  
+</div>
 
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="/bower_components/foundation/js/foundation.min.js"></script>
-
-</body>
-</html>
+<%- include dashboard-footer %>

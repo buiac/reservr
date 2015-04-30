@@ -71,10 +71,14 @@ body {
 /* event
  */
 
+.events-list {
+  padding-top: 60px;
+}
+
 .event {
   overflow: hidden;
   position: relative;
-  padding: 60px 0;
+  padding-bottom: 60px;
 }
 
 .event:after {
