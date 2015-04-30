@@ -184,6 +184,32 @@ module.exports = (function(config, db) {
     }
 
   };
+  
+  var eventDeleteImage = function(req, res, next) {
+    
+    var eventId = req.params.eventId;
+    var pictureIndex = req.params.pictureIndex;
+    
+    db.events.findOne({
+      _id: eventId
+    }).exec(function (err, event) {
+
+      if(event.images && event.images.length) {
+        event.images.splice(pictureIndex, 1);
+      }
+        
+      db.events.update({
+        '_id': eventId
+      }, event, function (err, num, newEvent) {
+
+        res.redirect('/dashboard/event/' + eventId);
+
+      });
+
+
+    });
+    
+  };
 
   var eventDelete = function(req, res, next) {
 
@@ -232,6 +258,7 @@ module.exports = (function(config, db) {
     eventCreate: eventCreate,
     view: view,
     eventEditView : eventEditView,
+    eventDeleteImage: eventDeleteImage,
     eventDelete: eventDelete
   };
 

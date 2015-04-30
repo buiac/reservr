@@ -77,7 +77,7 @@
               
               <% event.images.forEach(function(image, i){  %>
                 
-                <li class="clearing-featured-img">
+                <li class="<%= (i === 0) ? 'clearing-featured-img' : '' %>">
                   
                   <img src="<%= image.path %>">
                 

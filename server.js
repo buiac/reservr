@@ -109,12 +109,13 @@ module.exports = (function() {
   app.get('/dashboard/event/:eventId', adminAuth, dashboard.eventEditView);
   app.post('/dashboard/event', dashboard.eventCreate);
   app.get('/dashboard/eventdelete/:eventId', dashboard.eventDelete);
+  
+  app.get('/dashboard/event/:eventId/deleteimage/:pictureIndex', dashboard.eventDeleteImage);
 
   // reservations
   app.get('/reservations/:eventId', reservations.view);
   app.post('/reservations/:eventId', reservations.create);
   app.get('/reservations/delete/:eventId', reservations.create);
-
 
   // start express server
   app.listen(config.port, config.ipAddress, function() {

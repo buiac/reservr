@@ -30,6 +30,24 @@
   color:  #ffdd08;
 }
 
+.event-image-thumb {
+  position: relative;
+}
+
+.btn-delete-image {
+  position: absolute;
+  top: -8px;
+  right: 0;
+  padding: 0 7px;
+  background: #fff;
+  
+  font-size: 18px;
+  color: #333;
+  
+  border-radius: 100%;
+  box-shadow: 0 2px 2px #999;
+}
+
 /* datepicker
  */
 
