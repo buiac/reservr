@@ -172,11 +172,35 @@ module.exports = (function(config, db) {
 
     });
 
-  }
+  };
+
+  var reservationDelete = function(req, res, next) {
+
+    var reservationId = req.params.reservationId;
+    var eventId = req.params.eventId;
+    
+    db.reservations.remove({
+      _id: reservationId
+    },function (err, num) {
+
+      if (err) {
+        res.render('reservations', {
+          errors: err,
+          reservations: []
+        });
+      }
+
+      // redirect to reservations page
+      res.redirect('/reservations/' + eventId);
+
+    });
+
+  };
 
   return {
     create: create,
-    view: view
+    view: view,
+    reservationDelete: reservationDelete
   };
 
 });
