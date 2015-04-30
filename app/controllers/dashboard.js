@@ -87,14 +87,36 @@ module.exports = (function(config, db) {
     var errors = req.validationErrors();
     var images = [];
     
+    var name = (req.body.name) ? req.body.name.trim() : '';
+    var description = (req.body.description) ? req.body.description.trim() : '';
+    var eventId = (req.body._id) ? req.body._id.trim() : '';
+    var seats = (req.body.seats) ? req.body.seats.trim() : '';
+
+    var theEvent = {
+      name: name,
+      description: description,
+      _id: eventId || '',
+      images: images,
+      date: new Date(req.body.date),
+      seats: seats
+    };
+    
     // check if there's an image
     if (!req.files.images) {
+            
+      // for existing events,
+      // if we don't add any new images, leave the old ones alone.
+      if(req.body.existingImages) {
+        theEvent.images = JSON.parse(req.body.existingImages);
+      } else {
 
-      errors = errors || [];
+        errors = errors || [];
 
-      errors.push({
-        msg: 'Please upload an event image'
-      });  
+        errors.push({
+          msg: 'Please upload an event image'
+        });  
+        
+      }
 
     } else if (!req.files.images.length) {
 
@@ -114,21 +136,6 @@ module.exports = (function(config, db) {
 
     }
 
-    var name = (req.body.name) ? req.body.name.trim() : '';
-    var description = (req.body.description) ? req.body.description.trim() : '';
-    var eventId = (req.body._id) ? req.body._id.trim() : '';
-    var seats = (req.body.seats) ? req.body.seats.trim() : '';
-
-    var theEvent = {
-      name: name,
-      description: description,
-      _id: eventId || '',
-      images: images,
-      date: new Date(req.body.date),
-      seats: seats
-    };
-
-
     if (errors) {
       
       res.render('event-edit', {
@@ -142,7 +149,9 @@ module.exports = (function(config, db) {
 
     if (eventId) {
 
-      db.events.update({'_id': eventId}, theEvent, function (err, num, newEvent) {
+      db.events.update({
+        '_id': eventId
+      }, theEvent, function (err, num, newEvent) {
 
         if (err) {
           res.render('event-edit', {
