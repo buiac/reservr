@@ -12,6 +12,8 @@ module.exports = (function(config, db) {
   var marked = require('marked');
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
+  var Bitly = require('bitly');
+  var bitly = new Bitly('reservr', 'R_0f028c7d50e844f283a6c11b90600234');
   
   moment.locale('ro');
 
@@ -28,13 +30,13 @@ module.exports = (function(config, db) {
   // setup text for the user email
   var userEmailSetup = {
     subject: 'Rezervarea a fost facuta',
-    text: 'Salut, \n Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" din data de %EVENTDATE% de la ora %EVENTTIME%. \n Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%. \n O zi cat mai buna iti dorim.'
+    text: 'Salut, \n Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. \n Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%. \n O zi cat mai buna iti dorim.'
   };
 
   // setup text for the owner email
   var ownerEmailSetup = {
     subject: 'O noua rezervare la "%EVENTNAME%"',
-    text: 'Salut, \n O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" din data de %EVENTDATE% de catre %USEREMAIL%. \n O zi cat mai buna iti dorim.'
+    text: 'Salut, \n O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. \n O zi cat mai buna iti dorim.'
   };
 
 
@@ -90,33 +92,52 @@ module.exports = (function(config, db) {
               return;
             }
 
-            // TODO shorten reservation url
 
             // replace email template variables
             userEmailSetup.text = userEmailSetup.text.replace('%SEATS%', newReservation.seats);
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
-            userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , theEvent.date);
-            userEmailSetup.text = userEmailSetup.text.replace('%EVENTTIME%' , theEvent.date);
-            userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%','http://reserver.net/' + theEvent._id + newReservation._id);
+            userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
 
-            // send mail to user
-            transport.sendMail({
-              from: config.email,
-              to: newReservation.email,
-              subject: userEmailSetup.subject,
-              text: userEmailSetup.text
-            }, function (err, info) {
+            // shorten reservation url
+            bitly.shorten('http://reactor.reserver.net/' + theEvent._id + newReservation._id, function(err, response) {
+
+              if (err) {
+                
+                console.log(err);
               
-              console.log(err);
-              console.log(info);
+              } 
 
+              // send email to user
+              var short_url = response.data.url;
+
+              userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
+
+              // send mail to user
+              transport.sendMail({
+                
+                from: config.email,
+                to: newReservation.email,
+                subject: userEmailSetup.subject,
+                text: userEmailSetup.text
+
+              }, function (err, info) {
+                
+                console.log(err);
+                console.log(info);
+
+              });
+
+            
             });
+
+            
+            
 
             // replace template variables
             ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%SEATS%', newReservation.seats);
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTNAME%', theEvent.name);
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', theEvent.date);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
 
             // send a mail to venue owner
