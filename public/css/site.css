@@ -90,6 +90,7 @@ body {
 }
 
 .event-slider {
+  cursor: pointer;
 }
 
 .event-meta {
@@ -161,7 +162,9 @@ body {
 }
 
 .container-reserve-btn {
+  overflow: hidden;
   padding: 1rem 2rem;
+  height: 55px;
   
   text-align: center;
   cursor: pointer;
@@ -172,16 +175,71 @@ body {
 }
 
 .container-reserve-form {
-  display: none;
-  padding: 1rem;
+  position: relative;
+  visibility: hidden;
+  padding: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.container-reserve-form button {
+  margin: 0;
+}
+
+.container-reserve-form,
+.container-reserve-btn { 
+  transition: all .2s ease-out;
 }
 
 .container-reserve--active .container-reserve-form {
-  display: block;
+  visibility: visible;
+  height: 250px;
+  padding: 1rem;
+  opacity: 1;
 }
 
 .container-reserve--active .container-reserve-btn {
-  display: none;
+  visibility: hidden;
+  height: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+.container-reserve-form-success,
+.container-reserve-form-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 30% 1rem;
+  opacity: 0;
+  visibility: hidden;
+  
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  
+  transform: scale(1.2);
+  transition: all .2s ease-out;
+}
+
+.container-reserve-form--success .container-reserve-form-success,
+.container-reserve-form--error .container-reserve-form-error {
+  visibility: visible;
+  opacity: 1;
+  
+  transform: scale(1);
+}
+
+.container-reserve-form-success {
+  background: #27ae60;
+}
+
+.container-reserve-form-error {
+  background: #c0392b;
 }
 
 .free-seats {

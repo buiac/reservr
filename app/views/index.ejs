@@ -23,8 +23,8 @@
       <div class="small-12 columns">
         
         <a href="/" class="logo">
-          <img src="/images/logo-white.png" class="logo-reservr">
-          <img src="/images/logo-reactor.png" class="logo-client">
+          <img src="/images/logo-white.png" width="80" height="13" class="logo-reservr">
+          <img src="/images/logo-reactor.png" width="234" height="37" class="logo-client">
         </a>
         
       </div>
@@ -42,9 +42,7 @@
         </dt>
         
         <% intervals.forEach(function(interval, i) { %>
-          <dd class="<%=
-          (startDate === interval.startDate && endDate
-           === interval.endDate) ? 'active' : '' %>">
+          <dd class="<%= (interval === activeInterval) ? 'active' : '' %>">
            
             <a href="/?startDate=<%= interval.startDate %>&endDate=<%= interval.endDate %>">
               <%= interval.label %>
@@ -59,18 +57,27 @@
   
   <div class="events-list">
   
+    <% if(!events.length) { %>
+    
+      <h1 class="subheader text-center">
+        Nu avem evenimente planificate în următoarele <%= activeInterval.label %>.
+      </h1>
+    
+    <% } %>
+  
     <% events.forEach(function(event, i) { %>
     
       <div class="row event">
         
-        <div class="small-6 column">
+        <div class="medium-6 column">
           
           <div class="event-slider">
-            <ul data-orbit>
+            
+            <ul class="clearing-thumbs clearing-feature" data-clearing>
               
               <% event.images.forEach(function(image, i){  %>
                 
-                <li class="active">
+                <li class="clearing-featured-img">
                   
                   <img src="<%= image.path %>">
                 
@@ -79,11 +86,12 @@
               <% }) %>
 
             </ul>
+            
           </div>
           
         </div>
         
-        <div class="small-6 columns event-details">
+        <div class="medium-6 columns event-details">
           
           <h2>
             <%= event.name %>
@@ -94,7 +102,7 @@
             <div class="small-6 columns event-meta">
               <i class="fa fa-clock-o"></i>
               
-              <%= moment(event.date).format() %>
+              <%= moment(event.date).format('LLLL') %>
             </div>
           
             <div class="small-6 columns event-meta">
@@ -109,46 +117,60 @@
             <%- marked(event.description) %>
           </div>
           
-          <a class="event-toggle-description">
-            <span class="event-toggle-description-show">
-              vezi descrierea completă
-            </span>
-            <span class="event-toggle-description-hide">
-              ascunde descrierea completă
-            </span>
-          </a>
+          <% if(event.description.length > 300) { %>
+          
+            <a class="event-toggle-description">
+              <span class="event-toggle-description-show">
+                vezi descrierea completă
+              </span>
+              <span class="event-toggle-description-hide">
+                ascunde descrierea completă
+              </span>
+            </a>
+            
+          <% } %>
           
           <div class="row reserve-actions">
           
-            <div class="small-6 columns">
+            <div class="medium-6 columns">
               
               <div class="container-reserve">
                 <div class="container-reserve-btn">
                   Rezervă
                 </div>
                 
-                <form action="/" class="container-reserve-form">
+                <form class="container-reserve-form">
                   
                   <label>
                     Nume
-                    <input type="text" name="nume" required>
+                    <input type="text" name="nume" class="reserve-name" required>
                   </label>
                   
                   <label>
                     Telefon
-                    <input type="text" name="phone" required>
+                    <input type="text" name="phone" class="reserve-phone" required>
                   </label>
                   
                   <button type="submit">
                     Rezervă
                   </button>
                   
+                  <span class="container-reserve-form-success">
+                    <i class="fa fa-check"></i>
+                    Rezervarea a fost facuta
+                  </span>
+                  
+                  <span class="container-reserve-form-error">
+                    <i class="fa fa-times"></i>
+                    Rezervarea a esuat. Incercati mai tarziu.
+                  </span>
+                  
                 </form>
               </div>
               
             </div>
             
-            <div class="small-6 columns">
+            <div class="medium-6 columns">
               <span class="free-seats">
                 12 locuri disponibile
               </span>
@@ -174,6 +196,8 @@
   </div>
 
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/foundation/js/vendor/modernizr.js"></script>
+  <script src="/bower_components/foundation/js/vendor/fastclick.js"></script>
   <script src="/bower_components/foundation/js/foundation.min.js"></script>
   
   <script src="/js/site.js"></script>

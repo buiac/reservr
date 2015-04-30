@@ -10,6 +10,8 @@ module.exports = (function(config, db) {
   var util = require('util');
   var moment = require('moment');
   var marked = require('marked');
+  
+  moment.locale('ro');
 
   var view = function(req, res, next) {
 
@@ -19,6 +21,7 @@ module.exports = (function(config, db) {
     var defaultInterval = moment().add(7, 'days');
     
     var intervals = [];
+    var activeInterval = {};
     
     intervals.push({
       label: '7 zile',
@@ -54,6 +57,14 @@ module.exports = (function(config, db) {
       endDate = moment(defaultInterval).format('YYYY-MM-DD');
     }
     
+    intervals.some(function(interval) {
+      if(interval.startDate === startDate && interval.endDate === endDate) {
+        activeInterval = interval;
+        return true;
+      }
+      return false;
+    });
+    
     db.events
     .find({
       date: dateFilters
@@ -68,6 +79,7 @@ module.exports = (function(config, db) {
         startDate: startDate,
         endDate: endDate,
         intervals: intervals,
+        activeInterval: activeInterval,
         
         moment: moment,
         marked: marked
