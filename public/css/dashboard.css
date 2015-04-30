@@ -40,8 +40,8 @@
 
 .btn-delete-image {
   position: absolute;
-  top: -8px;
-  right: 0;
+  top: -10px;
+  right: -10px;
   padding: 0 7px;
   background: #fff;
   
@@ -50,6 +50,10 @@
   
   border-radius: 100%;
   box-shadow: 0 2px 2px #999;
+}
+
+.clearing-blackout .btn-delete-image {
+  display: none;
 }
 
 /* datepicker

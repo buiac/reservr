@@ -17,6 +17,10 @@
   
   };
   
+  $('.btn-delete-image').on('click', function(e) {
+    e.stopPropagation();
+  });
+  
 })(this);
 
 
