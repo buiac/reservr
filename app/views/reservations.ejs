@@ -1,0 +1,44 @@
+<%- include dashboard-header %>
+
+<div class="dashboard-content">
+
+	<% if (!reservations.length) { %>
+	  
+	  <h2 class="subheader text-center">
+	    No reservations yet.
+	  </h2>
+
+	<% } else { %>
+
+	<div class="row">
+	  <div class="large-10 columns">
+	    
+	    <h3>Reservations</h3>
+
+	    <ul>
+				
+	    	<% reservations.forEach(function(reservation){ %>
+
+				<li>
+					Email: <%= reservation.email %> <br>
+					Seats: <%= reservation.seats %>
+					
+					<br>
+				
+					<a href="/reservations/delete/<%= reservation._id %>" style="color:red">Delete Reservation</a>
+
+				<li>
+
+	    	<% }) %>
+	    
+	    </ul>
+
+	  </div>
+	</div> <!-- row -->
+
+	<% } %>
+
+</div>
+
+
+<%- include dashboard-footer %>
