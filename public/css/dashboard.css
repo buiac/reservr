@@ -30,6 +30,10 @@
   color:  #ffdd08;
 }
 
+.event-images {
+  margin-bottom: 1rem;
+}
+
 .event-image-thumb {
   position: relative;
 }
