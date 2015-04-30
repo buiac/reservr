@@ -113,7 +113,7 @@ module.exports = (function() {
   // reservations
   app.get('/reservations/:eventId', reservations.view);
   app.post('/reservations/:eventId', reservations.create);
-  app.get('/reservations/delete/:eventId', reservations.create);
+  app.get('/reservations/:eventId/delete/:reservationId', reservations.reservationDelete);
 
 
   // start express server
