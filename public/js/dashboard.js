@@ -6,10 +6,16 @@
   // init foundation
   $(document).foundation();
   
-  // init rome datetime picker
-  rome(document.querySelector('.event-date'), {
-    weekStart: 1
-  });
+  var $datePicker = document.querySelector('.event-date');
+  
+  if($datePicker) {
+  
+    // init rome datetime picker
+    rome($datePicker, {
+      weekStart: 1
+    });
+  
+  };
   
 })(this);
 

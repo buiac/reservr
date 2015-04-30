@@ -74,6 +74,10 @@
 
         <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
         
+        <% if(theEvent.images.length) { %>
+          <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
+        <% } %>
+        
         <% if (theEvent._id) { %>
 
           <a href="/dashboard/eventdelete/<%= theEvent._id %>" class="button alert tiny">Delete event</a>

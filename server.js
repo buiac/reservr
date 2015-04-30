@@ -43,6 +43,7 @@ module.exports = (function() {
   app.use(function(req, res, next){
     res.locals.moment = moment;
     res.locals.marked = marked;
+    res.locals.JSON = JSON;
     next();
   });
   
