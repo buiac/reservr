@@ -13,7 +13,7 @@ module.exports = (function(config, db) {
   var moment = require('moment');
   var marked = require('marked');
   
-  moment.defaultFormat = 'YYYY-MM-DD';
+  moment.defaultFormat = 'YYYY-MM-DD LT';
 
   var eventEditView = function(req, res, next) {
 
@@ -63,8 +63,7 @@ module.exports = (function(config, db) {
 
       if(err) {
         return res.render('dashboard', {
-          errors: err,
-          marked: marked
+          errors: err
         });
       }
 
@@ -72,13 +71,8 @@ module.exports = (function(config, db) {
         events = [];
       }
 
-      for (var i = 0; i < events.length; i++) {
-        events[i].description = marked(events[i].description)
-      }
-
       res.render('dashboard', {
-        events: events,
-        marked: marked
+        events: events
       });
 
     });
@@ -130,13 +124,13 @@ module.exports = (function(config, db) {
       description: description,
       _id: eventId || '',
       images: images,
-      date: req.body.date,
+      date: new Date(req.body.date),
       seats: seats
     };
 
 
     if (errors) {
-
+      
       res.render('event-edit', {
         theEvent: theEvent,
         errors: errors

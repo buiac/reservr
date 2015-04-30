@@ -11,6 +11,8 @@ module.exports = (function() {
   var fs = require('fs');
   var knox = require('knox');
   var multer = require('multer');
+  var moment = require('moment');
+  var marked = require('marked');
 
   var bodyParser = require('body-parser');
   var errorhandler = require('errorhandler');
@@ -37,6 +39,13 @@ module.exports = (function() {
     
   };
 
+  // globals in templates
+  app.use(function(req, res, next){
+    res.locals.moment = moment;
+    res.locals.marked = marked;
+    next();
+  });
+  
   // config express
   app.use(bodyParser.json({
     limit: '50mb'

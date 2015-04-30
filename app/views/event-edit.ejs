@@ -63,7 +63,7 @@
         <label>
           Event date:
 
-          <input type="text" name="date" value="<%= theEvent.date %>" class="event-date" required>
+          <input type="text" name="date" value="<%= moment(theEvent.date).format() %>" class="event-date" required>
         </label>
 
         <label>
