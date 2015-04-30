@@ -111,7 +111,9 @@ module.exports = (function() {
   app.get('/dashboard/eventdelete/:eventId', dashboard.eventDelete);
 
   // reservations
+  app.get('/reservations/:eventId', reservations.view);
   app.post('/reservations/:eventId', reservations.create);
+  app.get('/reservations/delete/:eventId', reservations.create);
 
 
   // start express server

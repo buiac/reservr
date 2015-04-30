@@ -128,7 +128,7 @@ module.exports = (function(config, db) {
             }, function (err, info) {
               
               console.log(err);
-              console.log(info);
+              console.log(info);  
               
             });
 
@@ -152,8 +152,31 @@ module.exports = (function(config, db) {
 
   };
 
+  var view = function (req, res, next) {
+    
+
+    // find all reservations for event
+    db.reservations.find({
+      eventId: req.params.eventId
+    }).exec(function (err, reservations) {
+
+      if(err) {
+        return res.render('reservations', {
+          errors: err
+        });
+      }
+
+      res.render('reservations', {
+        reservations: reservations
+      });
+
+    });
+
+  }
+
   return {
-    create: create
+    create: create,
+    view: view
   };
 
 });
