@@ -98,7 +98,7 @@
 
         <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
         
-        <% if(theEvent.images.length) { %>
+        <% if(theEvent.images && theEvent.images.length) { %>
           <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
         <% } %>
         
