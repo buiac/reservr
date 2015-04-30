@@ -88,10 +88,12 @@ module.exports = (function(config, db) {
 
     req.checkBody('name', 'Event name should not be empty').notEmpty();
     req.checkBody('description', 'Event description should not be empty').notEmpty();
+    req.checkBody('seats', 'Event seats should not be empty').notEmpty();
 
     var errors = req.validationErrors();
     var images = [];
     
+    // check if there's an image
     if (!req.files.images) {
 
       errors = errors || [];
@@ -118,22 +120,20 @@ module.exports = (function(config, db) {
 
     }
 
-    // check if there's an image
-    
-
     var name = (req.body.name) ? req.body.name.trim() : '';
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
+    var seats = (req.body.seats) ? req.body.seats.trim() : '';
 
-    // TODO use array of objects for images, maybe we'll need descriptions
-    
     var theEvent = {
       name: name,
       description: description,
       _id: eventId || '',
       images: images,
-      date: new Date(req.body.date)
+      date: new Date(req.body.date),
+      seats: seats
     };
+
 
     if (errors) {
 
@@ -183,6 +183,7 @@ module.exports = (function(config, db) {
   };
 
   var eventDelete = function(req, res, next) {
+
     var id = req.params.eventId;
     
     db.events.remove({
@@ -199,6 +200,8 @@ module.exports = (function(config, db) {
       res.redirect('/dashboard');
 
     });
+
+    // TODO delete images associated with an event
 
   };
 

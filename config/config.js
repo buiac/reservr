@@ -11,7 +11,8 @@ module.exports = (function() {
     // app folders
     dataDir: process.env.OPENSHIFT_DATA_DIR || process.cwd() + '/data',
     publicDir: '/public',
-    dbDir: '/db'
+    dbDir: '/db',
+    email: 'contact@reservr.net'
   };
 
   // read admin user credentials
