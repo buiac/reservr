@@ -2,41 +2,61 @@
 
 <div class="dashboard-content">
 
-	<% if (!reservations.length) { %>
-	  
-	  <h2 class="subheader text-center">
-	    No reservations yet.
-	  </h2>
+  <% if (!reservations.length) { %>
+    
+    <h2 class="subheader text-center">
+      No reservations yet.
+    </h2>
 
-	<% } else { %>
+  <% } else { %>
 
-	<div class="row">
-	  <div class="large-10 columns">
-	    
-	    <h3>Reservations</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      
+      <h3>
+        Reservations
+      </h3>
+      
+      <table class="table-reservations">
+        <thead>
+          <tr>
+            <th>
+              Email
+            </th>
+            <th>
+              Seats
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        
+          <% reservations.forEach(function(reservation){ %>
 
-	    <ul>
-				
-	    	<% reservations.forEach(function(reservation){ %>
+            <tr>
+              <td>
+                <%= reservation.email %>
+              </td>
+              <td>
+                <%= reservation.seats %>
+              </td>
+              <td>
+                <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                  <i class="fa fa-times-circle"></i>
+                  Delete Reservation
+                </a>
+              </td>
+            </tr>
 
-				<li>
-					Email: <%= reservation.email %> <br>
-					Seats: <%= reservation.seats %>
-					
-					<br>
-				
-					<a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" style="color:red">Delete Reservation</a>
+          <% }) %>
+        
+        </tbody>
+      </table>
 
-				<li>
+    </div>
+  </div>
 
-	    	<% }) %>
-	    
-	    </ul>
-
-	  </div>
-	</div> <!-- row -->
-
-	<% } %>
+  <% } %>
 
 </div>
 

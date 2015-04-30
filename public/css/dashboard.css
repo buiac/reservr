@@ -70,3 +70,67 @@
 .rd-container .rd-next:hover {
   color: #fff;
 }
+
+/* reservations
+ */
+
+.table-reservations {
+  width: 100%;
+}
+
+.btn-delete-reservation {
+  color: #cf2a0e;
+}
+
+.table-reservations td:nth-child(2) {
+  width: 200px;
+}
+
+.table-reservations td:nth-child(3) {
+  width: 160px;
+}
+
+@media only screen and (max-width: 40.063em) {
+  
+  /* Force table to not be like tables anymore */
+  .table-reservations,
+  .table-reservations thead,
+  .table-reservations tbody,
+  .table-reservations th,
+  .table-reservations td,
+  .table-reservations tr { 
+    display: block; 
+    width: auto !important;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  .table-reservations td { 
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+  }
+
+  .table-reservations td:before { 
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+  }
+
+  .table-reservations td:nth-of-type(1):before { content: 'Email'; }
+  .table-reservations td:nth-of-type(2):before { content: 'Seats'; }
+  .table-reservations td:nth-of-type(3):before { content: ''; }
+  
+}
