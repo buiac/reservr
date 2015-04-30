@@ -1,28 +1,12 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>
-    reservr - Event edit
-  </title>
+<%- include dashboard-header %>
+  
+  <div class="row">
+    <div class="small-12 columns">
 
-  <link rel="stylesheet" href="/bower_components/foundation/css/normalize.css">
-  <link rel="stylesheet" href="/bower_components/foundation/css/foundation.css">
-</head>
-<body>
-
-  <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <li class="name">
-        <h1>
-          <a href="/dashboard">reservr dashboard</a>
-        </h1>
-      </li>
-    </ul>
-  </nav>
-
-  <h3>Edit event</h3>
+      <h3>Edit event</h3>
+      
+    </div>
+  </div>
   
   <form method="post" action="/dashboard/event" enctype="multipart/form-data">
     
@@ -116,8 +100,5 @@
     
   </form>
 
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="/bower_components/foundation/js/foundation.min.js"></script>
-
-</body>
-</html>
+ <%- include dashboard-footer %>
+ 

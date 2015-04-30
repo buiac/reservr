@@ -5,6 +5,15 @@
   border-bottom: 4px solid #ffdd08;
 }
 
+.header h2 {
+  color: #fff;
+}
+
+.logo img {
+  width: auto;
+  max-height: 14px;
+}
+
 .btn-event-new {
   float: right;
   
