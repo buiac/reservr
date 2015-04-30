@@ -62,7 +62,10 @@ module.exports = (function(config, db) {
     .exec(function (err, events) {
 
       if(err) {
-        return res.render('dashboard', {errors: err});
+        return res.render('dashboard', {
+          errors: err,
+          marked: marked
+        });
       }
 
       if (!events.length) {
@@ -74,7 +77,8 @@ module.exports = (function(config, db) {
       }
 
       res.render('dashboard', {
-        events: events
+        events: events,
+        marked: marked
       });
 
     });
