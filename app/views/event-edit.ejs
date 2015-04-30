@@ -3,7 +3,7 @@
   <div class="row">
     <div class="small-12 columns">
 
-      <h3>Edit event</h3>
+      <h2>Edit event</h2>
       
     </div>
   </div>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="row">
-      <div class="large-4 columns">
+      <div class="large-6 columns">
       
 
         <label>Event name:
@@ -50,17 +50,20 @@
           <textarea name="description" rows="12"><%= theEvent.description || '' %></textarea>
 
         </label>
+        
+      </div>
+      
+      <div class="large-6 columns">
 
         <label>
-          Event image:
-
+          Event images:
           <input type="file" name="images" multiple>
         </label>
         
         <label>
           Event date:
 
-          <input type="date" name="date" value="<%= theEvent.date %>" required>
+          <input type="text" name="date" value="<%= theEvent.date %>" class="event-date" required>
         </label>
 
         <label>
@@ -70,8 +73,6 @@
         </label>
 
         <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
-
-        <button class="button tiny" type="submit">Submit</button>
         
         <% if (theEvent._id) { %>
 
@@ -79,6 +80,7 @@
 
         <% } %>
         
+        <button class="button right" type="submit">Submit</button>
 
       </div>
     </div>

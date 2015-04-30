@@ -24,3 +24,18 @@
 .btn-event-new:hover {
   color:  #ffdd08;
 }
+
+/* datepicker
+ */
+
+.rd-container .rd-back,
+.rd-container .rd-next {
+  padding: .2em;
+  
+  color: #333;
+}
+
+.rd-container .rd-back:hover,
+.rd-container .rd-next:hover {
+  color: #fff;
+}
