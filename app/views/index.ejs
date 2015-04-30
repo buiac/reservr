@@ -67,12 +67,17 @@
           
           <div class="event-slider">
             <ul data-orbit>
-              <li class="active">
-                <img src="/media/pic1.jpg">
-              </li>
-              <li>
-                <img src="/media/pic2.jpg">
-              </li>
+              
+              <% event.images.forEach(function(image, i){  %>
+                
+                <li class="active">
+                  
+                  <img src="<%= image.path %>">
+                
+                </li>
+
+              <% }) %>
+
             </ul>
           </div>
           
