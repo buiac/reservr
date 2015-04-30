@@ -79,9 +79,16 @@ module.exports = (function() {
     autoload: true
   });
 
+  // reservations datastore
+  db.reservations = new Datastore({
+    filename: config.dataDir + config.dbDir + '/reservations.db',
+    autoload: true
+  });
+
   // controllers
   var index = require('./app/controllers/index.js')(config, db);
   var dashboard = require('./app/controllers/dashboard.js')(config, db);
+  var reservations = require('./app/controllers/reservations.js')(config, db);
 
   // public routes
   app.get('/', index.view);
@@ -92,6 +99,9 @@ module.exports = (function() {
   app.get('/dashboard/event/:eventId', adminAuth, dashboard.eventEditView);
   app.post('/dashboard/event', dashboard.eventCreate);
   app.get('/dashboard/eventdelete/:eventId', dashboard.eventDelete);
+
+  // reservations
+  app.post('/reservations/:eventId', reservations.create);
 
 
   // start express server

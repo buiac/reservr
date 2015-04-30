@@ -72,7 +72,7 @@
         <div class="medium-6 column">
           
           <div class="event-slider">
-            
+
             <ul class="clearing-thumbs clearing-feature" data-clearing>
               
               <% event.images.forEach(function(image, i){  %>
@@ -136,23 +136,25 @@
               
               <div class="container-reserve">
                 <div class="container-reserve-btn">
-                  Rezervă
+                  Rezervă locuri
                 </div>
                 
                 <form class="container-reserve-form">
                   
                   <label>
-                    Nume
-                    <input type="text" name="nume" class="reserve-name" required>
+                    Email
+                    <input type="email" name="email" class="reserve-email" required>
                   </label>
                   
                   <label>
-                    Telefon
-                    <input type="text" name="phone" class="reserve-phone" required>
+                    Numar de locuri
+                    <input type="number" min="1" max="5" name="seats" class="reserve-seats" required>
                   </label>
+
+                  <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
                   
                   <button type="submit">
-                    Rezervă
+                    Rezervă locuri
                   </button>
                   
                   <span class="container-reserve-form-success">
@@ -172,7 +174,7 @@
             
             <div class="medium-6 columns">
               <span class="free-seats">
-                12 locuri disponibile
+                <%= event.seats %> locuri disponibile
               </span>
             </div>
             

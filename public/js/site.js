@@ -34,18 +34,19 @@
   var submitReserveForm = function() {
     
     var $this = $(this);
-    var name = $this.find('.reserve-name').val();
-    var phone = $this.find('.reserve-phone').val();
+    var email = $this.find('.reserve-email').val();
+    var seats = $this.find('.reserve-seats').val();
+    var eventId = $this.find('.reserve-id').val();
     
     $this.removeClass('container-reserve-form--success container-reserve-form--error');
     
     $this.addClass('container-reserve-form--loading');
     
-    $.ajax('/', {
+    $.ajax('/reservations/' + eventId, {
       type: 'POST',
       data: {
-        name: name,
-        phone: phone
+        email: email,
+        seats: seats
       },
       success: function(res) {
         
