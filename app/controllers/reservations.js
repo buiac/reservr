@@ -77,7 +77,7 @@ module.exports = (function(config, db) {
           res.status(400).json(err);
         }
 
-        // replace template variables and send a confirmation email to user 
+        // replace template variables
         userEmailText.text = userEmailText.text.replace('%SEATS%', newReservation.seats);
         userEmailText.text = userEmailText.text.replace('%EVENTNAME%' , theEvent.name);
         userEmailText.text = userEmailText.text.replace('%EVENTDATE%' , theEvent.date);
@@ -95,7 +95,9 @@ module.exports = (function(config, db) {
           console.log(info);
         });
 
-        // send a notification to venue owner
+        // replace template variables
+
+        // send a mail to venue owner
         transport.sendMail({
             from: config.email,
             to: 'sebi.kovacs@gmail.com',
