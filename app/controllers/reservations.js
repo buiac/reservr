@@ -12,10 +12,10 @@ module.exports = (function(config, db) {
   var marked = require('marked');
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
+  var Bitly = require('bitly');
+  var bitly = new Bitly('reservr', 'R_0f028c7d50e844f283a6c11b90600234');
   
   moment.locale('ro');
-
-  console.log(moment().format('dddd, Do MMMM YYYY, HH:mm'));
 
   // set up Mandrill transport
   var transport = nodemailer.createTransport(smtpTransport({
@@ -92,26 +92,46 @@ module.exports = (function(config, db) {
               return;
             }
 
-            // TODO shorten reservation url
 
             // replace email template variables
             userEmailSetup.text = userEmailSetup.text.replace('%SEATS%', newReservation.seats);
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
-            userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%','http://reserver.net/' + theEvent._id + newReservation._id);
 
-            // send mail to user
-            transport.sendMail({
-              from: config.email,
-              to: newReservation.email,
-              subject: userEmailSetup.subject,
-              text: userEmailSetup.text
-            }, function (err, info) {
+            // shorten reservation url
+            bitly.shorten('http://reactor.reserver.net/' + theEvent._id + newReservation._id, function(err, response) {
+
+              if (err) {
+                
+                console.log(err);
               
-              console.log(err);
-              console.log(info);
+              } 
 
+              // send email to user
+              var short_url = response.data.url;
+
+              userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
+
+              // send mail to user
+              transport.sendMail({
+                
+                from: config.email,
+                to: newReservation.email,
+                subject: userEmailSetup.subject,
+                text: userEmailSetup.text
+
+              }, function (err, info) {
+                
+                console.log(err);
+                console.log(info);
+
+              });
+
+            
             });
+
+            
+            
 
             // replace template variables
             ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
