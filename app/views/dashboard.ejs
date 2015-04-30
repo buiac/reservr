@@ -41,24 +41,32 @@
       
       <ul>
        
-        <% for(var i = 0; i < events.length; i++) {%>
+        <% events.forEach(function(event){ %>
                       
           <li> 
 
-            <a href="/dashboard/event/<%= events[i]._id %>"> 
-              <%= events[i].name %> 
+            <a href="/dashboard/event/<%= event._id %>"> 
+              <%= event.name %> 
             </a>
 
             <div>
-              <%- events[i].description %>
+              <%- event.description %>
             </div>
+            
+            <% if (event.images) {%>
+              <% event.images.forEach(function(image){ %>
+              <div style="max-width: 300px">
 
-            <div>
-              <img src="/media/<%= events[i].image || 'default-placeholder.png'%>" alt="">
-            </div>
+                <img style="max-width: 100%" src="<%= image.path %>" alt="">
+
+              </div>
+              
+              <% }) %>
+
+            <% } %>
           </li>
 
-        <% } %>  
+        <% }) %>  
 
       </ul>
 

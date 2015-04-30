@@ -82,25 +82,41 @@ module.exports = (function(config, db) {
     req.checkBody('name', 'Event name should not be empty').notEmpty();
     req.checkBody('description', 'Event description should not be empty').notEmpty();
 
-    
-
     var errors = req.validationErrors();
+    var images = [];
+    
+    if (!req.files.images) {
 
-    // check if there's an image
-    if (!req.files.image) {
       errors = errors || [];
 
       errors.push({
         msg: 'Please upload an event image'
-      });      
+      });  
+
+    } else if (!req.files.images.length) {
+
+      images.push({
+        path: '/media/' + req.files.images.originalname 
+      });
+
+    } else if (req.files.images.length) {
+
+      req.files.images.forEach(function (image) {
+
+        images.push({
+          path: '/media/' + image.originalname
+        });
+
+      });
+
     }
 
-    console.log(req.files.image);
+    // check if there's an image
+    
 
     var name = (req.body.name) ? req.body.name.trim() : '';
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
-    var image = (req.files.image) ? req.files.image.originalname : '';
 
     // TODO use array of objects for images, maybe we'll need descriptions
     
@@ -108,11 +124,9 @@ module.exports = (function(config, db) {
       name: name,
       description: description,
       _id: eventId || '',
-      image: image,
+      images: images,
       date: new Date(req.body.date)
     };
-    
-    console.log(theEvent);
 
     if (errors) {
 
