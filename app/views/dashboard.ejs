@@ -25,7 +25,7 @@
 
       <div class="row event">
       
-        <div class="small-4 column">
+        <div class="medium-4 column">
         
           <div class="event-slider">
 
@@ -48,7 +48,7 @@
         
         </div>
       
-        <div class="small-6 columns event-details">
+        <div class="medium-6 columns event-details">
           
           <a href="/dashboard/event/<%= event._id %>"> 
             <h2>
@@ -61,7 +61,7 @@
             <div class="small-6 columns event-meta">
               <i class="fa fa-clock-o"></i>
               
-              Vineri, 24 aprilie, ora 20.00
+              <%= moment(event.date).format('LLLL') %>
             </div>
           
             <div class="small-6 columns event-meta">
@@ -91,7 +91,7 @@
             
         </div>
         
-        <div class="small-2 columns">
+        <div class="medium-2 columns">
           
           <a href="/dashboard/event/<%= event._id %>" class="button">
             Edit
