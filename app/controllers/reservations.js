@@ -26,16 +26,17 @@ module.exports = (function(config, db) {
   }));
 
   // setup text for the user email
-  var userEmailText = {
+  var userEmailSetup = {
     subject: 'Rezervarea a fost facuta',
     text: 'Salut, \n Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" din data de %EVENTDATE% de la ora %EVENTTIME%. \n Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%. \n O zi cat mai buna iti dorim.'
   };
 
   // setup text for the owner email
-  var ownerEmailText = {
-    subject: 'Rezervare la "%EVENTNAME%"',
+  var ownerEmailSetup = {
+    subject: 'O noua rezervare la "%EVENTNAME%"',
     text: 'Salut, \n O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" din data de %EVENTDATE% de catre %USEREMAIL%. \n O zi cat mai buna iti dorim.'
   };
+
 
   var create = function (req, res, next) {
     
@@ -60,71 +61,92 @@ module.exports = (function(config, db) {
       eventId: eventId
     };
 
-    db.reservations.insert(reservation, function (err, newReservation) {
+    // find event and get details
+    db.events.findOne({
+      _id: reservation.eventId
+    }).exec(function (err, theEvent) {
 
-      if (err) {
+      if(err) {
         res.status(400).json(err);
-        return;
       }
 
-      // find event and get details
+      // check if there are seats available
+      reservation.seats = parseInt(reservation.seats);
+      theEvent.seats = parseInt(theEvent.seats)
+      
 
-      db.events.findOne({
-        _id: newReservation.eventId
-      }).exec(function (err, theEvent) {
+      if (theEvent.seats > reservation.seats) {
 
-        if(err) {
-          res.status(400).json(err);
-        }
-
-        // replace template variables
-        userEmailText.text = userEmailText.text.replace('%SEATS%', newReservation.seats);
-        userEmailText.text = userEmailText.text.replace('%EVENTNAME%' , theEvent.name);
-        userEmailText.text = userEmailText.text.replace('%EVENTDATE%' , theEvent.date);
-        userEmailText.text = userEmailText.text.replace('%EVENTTIME%' , theEvent.date);
-        userEmailText.text = userEmailText.text.replace('%RESERVATIONURL%','http://reserver.net/' + theEvent._id + newReservation._id);
+        theEvent.seats = theEvent.seats - reservation.seats;
         
-        // send mail to user
-        transport.sendMail({
-            from: config.email,
-            to: email,
-            subject: userEmailText.subject,
-            text: userEmailText.text
-        }, function (err, info) {
-          console.log(err);
-          console.log(info);
+        // update the number of seats available
+        db.events.update({'_id': theEvent._id}, theEvent, function (err, num, newEvent){
+
+          // add the reservation to the database
+          db.reservations.insert(reservation, function (err, newReservation) {
+
+            if (err) {
+              res.status(400).json(err);
+              return;
+            }
+
+            // TODO shorten reservation url
+
+            // replace email template variables
+            userEmailSetup.text = userEmailSetup.text.replace('%SEATS%', newReservation.seats);
+            userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
+            userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , theEvent.date);
+            userEmailSetup.text = userEmailSetup.text.replace('%EVENTTIME%' , theEvent.date);
+            userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%','http://reserver.net/' + theEvent._id + newReservation._id);
+
+            // send mail to user
+            transport.sendMail({
+              from: config.email,
+              to: newReservation.email,
+              subject: userEmailSetup.subject,
+              text: userEmailSetup.text
+            }, function (err, info) {
+              
+              console.log(err);
+              console.log(info);
+
+            });
+
+            // replace template variables
+            ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%SEATS%', newReservation.seats);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTNAME%', theEvent.name);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', theEvent.date);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
+
+            // send a mail to venue owner
+            transport.sendMail({
+              from: config.email,
+              to: 'sebi.kovacs@gmail.com',
+              subject: ownerEmailSetup.subject,
+              text: ownerEmailSetup.text
+            }, function (err, info) {
+              
+              console.log(err);
+              console.log(info);
+              
+            });
+
+            // send response to client
+            res.json({
+              message: 'Create successful.',
+              reservation: newReservation
+            });
+
+          });
+
         });
-
-        // replace template variables
-
-        // send a mail to venue owner
-        transport.sendMail({
-            from: config.email,
-            to: 'sebi.kovacs@gmail.com',
-            subject: 'hello',
-            text: 'hello world! ' + new Date().getTime()
-        }, function (err, info) {
-          console.log(err);
-          console.log(info);
-        });
-
-
-
-      });
-
-      // shorten url
-
       
+      } else {
 
-      // adjust the number of available seats
+        res.status(400).json({msg: 'Ne pare rau. Numarul locurilor rezervate e mai mare decat numarul locurilor disponibile. Actualizati pagina pentru a vedea numarul exact al locurilor disponibile.'});
 
-      
-
-      // send response to client
-      res.json({
-        message: 'Create successful.',
-        reservation: newReservation
-      });
+      }
 
     });
 
