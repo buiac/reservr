@@ -61,11 +61,14 @@
               
               <%= moment(event.date).format('LLLL') %>
             </div>
+          </div>
+          <div class="row">
+            
           
-            <div class="small-6 columns event-meta">
+            <div class="small-10 columns event-meta">
               <i class="fa fa-map-marker"></i>
               
-              #Sound Reactor
+              <%= event.location || '' %>
             </div>
             
           </div>

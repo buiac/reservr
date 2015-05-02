@@ -83,6 +83,7 @@ module.exports = (function(config, db) {
     req.checkBody('name', 'Event name should not be empty').notEmpty();
     req.checkBody('description', 'Event description should not be empty').notEmpty();
     req.checkBody('seats', 'Event seats should not be empty').notEmpty();
+    req.checkBody('location', 'Event location should not be empty').notEmpty();
 
     var errors = req.validationErrors();
     var images = [];
@@ -91,6 +92,7 @@ module.exports = (function(config, db) {
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
+    var location = (req.body.location) ? req.body.location.trim() : '';
 
     var theEvent = {
       name: name,
@@ -98,7 +100,8 @@ module.exports = (function(config, db) {
       _id: eventId || '',
       images: images,
       date: new Date(req.body.date),
-      seats: seats
+      seats: seats,
+      location: location
     };
     
     // check if there's an image
