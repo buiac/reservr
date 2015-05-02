@@ -39,7 +39,6 @@ module.exports = (function(config, db) {
     text: 'Salut, \n O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. \n O zi cat mai buna iti dorim.'
   };
 
-
   var create = function (req, res, next) {
     
     req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
@@ -100,20 +99,7 @@ module.exports = (function(config, db) {
 
             // shorten reservation url
             var longUrl;
-
-            console.log(process.env.OPENSHIFT_APP_NAME);
-
-            if(!process.env.OPENSHIFT_APP_NAME) {
-              
-              longUrl = 'http://localhost:8080/' + theEvent._id + '/' + newReservation._id;
-            
-            } else {
-
-              longUrl = 'http://reactor.reserver.net/' + theEvent._id + '/' + newReservation._id;
-
-            }
-
-            console.log(longUrl);
+            longUrl = 'http://reactor.reserver.net/' + theEvent._id + '/' + newReservation._id;
 
             bitly.shorten(longUrl, function(err, response) {
 
@@ -126,6 +112,12 @@ module.exports = (function(config, db) {
               // send email to user
               var short_url = response.data.url;
 
+              if(!process.env.OPENSHIFT_APP_NAME) {
+                
+                short_url = 'http://localhost:8080/' + theEvent._id + '/' + newReservation._id;
+              
+              }
+
               userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
 
               // send mail to user
@@ -137,8 +129,6 @@ module.exports = (function(config, db) {
                 text: userEmailSetup.text
 
               }, function (err, info) {
-
-                console.log('user email');
                 
                 console.log(err);
                 console.log(info);
@@ -147,10 +137,8 @@ module.exports = (function(config, db) {
 
             
             });
-
             
-            
-
+          
             // replace template variables
             ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%SEATS%', newReservation.seats);
@@ -158,17 +146,24 @@ module.exports = (function(config, db) {
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
 
+            var ownerEmail = 'sebi.kovacs@gmail.com';
+
+            if (req.subdomains && req.subdomains.length === 1) {
+
+              ownerEmail = 'rezervari.reactor@yahoo.ro';
+            
+            }
+
             // send a mail to venue owner
             transport.sendMail({
               from: config.email,
-              to: 'sebi.kovacs@gmail.com',
+              to: ownerEmail,
               subject: ownerEmailSetup.subject,
               text: ownerEmailSetup.text
             }, function (err, info) {
               
-              console.log('owner email');
               console.log(err);
-              console.log(info);  
+              console.log(info);
               
             });
 
