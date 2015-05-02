@@ -100,6 +100,9 @@ module.exports = (function(config, db) {
 
             // shorten reservation url
             var longUrl;
+
+            console.log(process.env.OPENSHIFT_APP_NAME);
+
             if(!process.env.OPENSHIFT_APP_NAME) {
               
               longUrl = 'http://localhost:8080/' + theEvent._id + '/' + newReservation._id;
@@ -109,6 +112,8 @@ module.exports = (function(config, db) {
               longUrl = 'http://reactor.reserver.net/' + theEvent._id + '/' + newReservation._id;
 
             }
+
+            console.log(longUrl);
 
             bitly.shorten(longUrl, function(err, response) {
 
