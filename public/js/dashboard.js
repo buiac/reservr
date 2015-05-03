@@ -46,7 +46,12 @@
 
   $('.image-default').on('click', function (e) {
     e.stopPropagation();
+
+    $('.event-images li').removeClass('active-image');
+    $(this).parent().addClass('active-image');
+
   });
+
 
 
   

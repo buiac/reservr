@@ -14,6 +14,10 @@
   padding: 0;
 }
 
+.event-images li.active-image a:first-child{
+  border: solid 4px rgb(255, 221, 8);
+}
+
 .logo img {
   width: auto;
   max-height: 14px;
