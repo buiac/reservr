@@ -73,6 +73,33 @@ module.exports = (function(config, db) {
       date: 1
     })
     .exec(function (err, events) {
+
+      // make the active image in the stack the first
+      events.forEach(function (ev) {
+
+        var activeImage = 0;
+        var img;
+
+        // get the index of the active image
+        ev.images.forEach(function (image, i) {
+          
+          if (image.active) {
+            
+            activeImage = i;
+
+          }
+
+        });
+
+        // take out the active image and add it to the beggining of the array
+        if (activeImage > 0) {
+          
+          img = ev.images.splice(activeImage, 1);
+          ev.images.unshift(img[0]);
+
+        }
+
+      });
       
       res.render('index', {
         events: events,

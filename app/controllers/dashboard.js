@@ -71,6 +71,35 @@ module.exports = (function(config, db) {
         events = [];
       }
 
+      // make the active image in the stack the first
+      events.forEach(function (ev) {
+
+        var activeImage = 0;
+        var img;
+
+        // get the index of the active image
+        ev.images.forEach(function (image, i) {
+          
+          if (image.active) {
+            
+            activeImage = i;
+
+          }
+
+        });
+
+        // take out the active image and add it to the beggining of the array
+        if (activeImage > 0) {
+          
+          img = ev.images.splice(activeImage, 1);
+          ev.images.unshift(img[0]);
+
+        }
+
+      });
+
+
+      
       res.render('dashboard', {
         events: events
       });
@@ -93,6 +122,8 @@ module.exports = (function(config, db) {
     var eventId = (req.body._id) ? req.body._id.trim() : '';
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
     var location = (req.body.location) ? req.body.location.trim() : '';
+    var activeImage = parseInt(req.body.activeImage || 0);
+
 
     var theEvent = {
       name: name,
@@ -101,7 +132,8 @@ module.exports = (function(config, db) {
       images: images,
       date: new Date(req.body.date),
       seats: seats,
-      location: location
+      location: location,
+      activeImage: activeImage
     };
     
     // check if there's an image
@@ -110,7 +142,18 @@ module.exports = (function(config, db) {
       // for existing events,
       // if we don't add any new images, leave the old ones alone.
       if(req.body.existingImages) {
+        
+
         theEvent.images = JSON.parse(req.body.existingImages);
+
+        theEvent.images.forEach(function (image, i) {
+          if (i === activeImage) {
+            image.active = true;
+          } else {
+            image.active = false;
+          }
+        });
+
       } else {
 
         errors = errors || [];
@@ -129,7 +172,7 @@ module.exports = (function(config, db) {
 
     } else if (req.files.images.length) {
 
-      req.files.images.forEach(function (image) {
+      req.files.images.forEach(function (image, i) {
 
         images.push({
           path: '/media/' + image.originalname

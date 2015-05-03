@@ -78,7 +78,15 @@ body {
 .event {
   overflow: hidden;
   position: relative;
-  padding-bottom: 60px;
+  padding: 60px 0 30px 0;
+}
+
+.event:first-child {
+  padding-top: 0;
+}
+
+.event:last-child:after {
+  border-bottom: 0 none;
 }
 
 .event:after {

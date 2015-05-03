@@ -67,17 +67,15 @@
             
             <% theEvent.images.forEach(function(image, i){  %>
               
-              <li class="event-image-thumb">
+              <li class="event-image-thumb <% if (image.active) { %> active-image <% } %>" >
                 
                 <a href="<%= image.path %>" class="th">
                   <img src="<%= image.path %>" width="100">
                 </a>
                 
-                <% if(i > 0) { %>
-                  <a href="/dashboard/event/<%= theEvent._id %>/deleteimage/<%= i %>" class="btn-delete-image" title="Delete image">
-                    <i class="fa fa-times-circle"></i>
-                  </a>
-                <% } %>
+                <a href="/dashboard/event/<%= theEvent._id %>/deleteimage/<%= i %>" class="btn-delete-image" title="Delete image">
+                  <i class="fa fa-times-circle"></i>
+                </a>
               
               </li>
 
