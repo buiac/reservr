@@ -117,8 +117,50 @@ module.exports = (function(config, db) {
 
   };
 
+  var eventView = function(req, res, next) {
+
+    db.events
+    .findOne({
+      _id: req.params.eventId
+    })
+    .exec(function (err, ev) {
+
+      var activeImage = 0;
+      var img;
+
+      // get the index of the active image
+      ev.images.forEach(function (image, i) {
+        
+        if (image.active) {
+          
+          activeImage = i;
+
+        }
+
+      });
+
+      // take out the active image and add it to the beggining of the array
+      if (activeImage > 0) {
+        
+        img = ev.images.splice(activeImage, 1);
+        ev.images.unshift(img[0]);
+
+      }      
+      
+      res.render('event', {
+        events: [ev],
+        moment: moment,
+        marked: marked
+      });
+      
+    });
+    
+
+  };
+
   return {
-    view: view
+    view: view,
+    eventView: eventView
   };
 
 });

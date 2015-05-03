@@ -33,27 +33,6 @@
     
   </header>
 
-  <div data-magellan-expedition="fixed" class="menu-header">
-    <div class="row">
-      
-      <dl class="sub-nav">
-        <dt>
-          Vezi programul pentru următoarele
-        </dt>
-        
-        <% intervals.forEach(function(interval, i) { %>
-          <dd class="<%= (interval === activeInterval) ? 'active' : '' %>">
-           
-            <a href="/?startDate=<%= interval.startDate %>&endDate=<%= interval.endDate %>">
-              <%= interval.label %>
-            </a>
-            
-          </dd>
-        <% }) %>
-        
-      </dl>
-    </div>
-  </div>
   
   <div class="events-list">
   
@@ -94,7 +73,7 @@
         <div class="medium-6 columns event-details">
           
           <h2>
-            <a href="/event/<%= event._id %>"><%= event.name %></a>
+            <%= event.name %>
           </h2>
           
           <div class="row">

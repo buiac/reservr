@@ -102,6 +102,7 @@ module.exports = (function() {
 
   // public routes
   app.get('/', index.view);
+  app.get('/event/:eventId', index.eventView);
   
   // dashboard
   app.get('/dashboard', adminAuth, dashboard.view);
@@ -117,6 +118,8 @@ module.exports = (function() {
   app.post('/reservations/:eventId', reservations.create);
   app.get('/reservations/:eventId/delete/:reservationId', adminAuth, reservations.reservationDelete);
   app.get('/reservations/userview/:reservationId', reservations.userView);
+
+  app.post('/reservations/update/:eventId', reservations.update);
 
   // start express server
   app.listen(config.port, config.ipAddress, function() {

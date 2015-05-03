@@ -52,6 +52,56 @@
 
   });
 
+  var submitUpdateForm = function() {
+
+    var $this = $(this);
+    var email = $this.find('.reserve-email').val();
+    var seats = $this.find('.reserve-seats').val();
+    var eventId = $this.find('.event-id').val();
+    var reservationId = $this.find('.reserve-id').val();
+    
+    $this.removeClass('container-reserve-form--success container-reserve-form--error');
+    
+    $this.addClass('container-reserve-form--loading');
+    
+    $.ajax('/reservations/update/' + eventId, {
+      type: 'POST',
+      data: {
+        email: email,
+        seats: seats,
+        eventId: eventId,
+        reservationId: reservationId
+      },
+      success: function(res) {
+        
+        $this.addClass('container-reserve-form--success');
+        
+      },
+      error: function(err) {
+        
+        $this.addClass('container-reserve-form--error');
+        
+        // allow me to try again 
+        setTimeout(function() {
+          
+          $this.removeClass('container-reserve-form--error');
+          
+        }, 5000);
+        
+      },
+      complete: function() {
+       
+        $this.removeClass('container-reserve-form--loading');
+        
+      }
+    });
+    
+    return false;
+    
+  };
+
+  $('#reservations-update').on('submit', submitUpdateForm);
+
 
 
   
