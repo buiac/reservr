@@ -18,7 +18,7 @@ module.exports = (function(config, db) {
     var startDate = req.query.startDate || '';
     var endDate = req.query.endDate || '';
     
-    var defaultInterval = moment().add(7, 'days');
+    var defaultInterval = moment().add(30, 'days');
     
     var intervals = [];
     var activeInterval = {};
@@ -26,13 +26,13 @@ module.exports = (function(config, db) {
     intervals.push({
       label: '7 zile',
       startDate: moment().format('YYYY-MM-DD'),
-      endDate: defaultInterval.format('YYYY-MM-DD')
+      endDate: moment().add(7, 'days').format('YYYY-MM-DD')
     });
     
     intervals.push({
       label: '30 de zile',
       startDate: moment().format('YYYY-MM-DD'),
-      endDate: moment().add(30, 'days').format('YYYY-MM-DD')
+      endDate: defaultInterval.format('YYYY-MM-DD')
     });
     
     intervals.push({
@@ -70,7 +70,7 @@ module.exports = (function(config, db) {
       date: dateFilters
     })
     .sort({
-      date: -1
+      date: 1
     })
     .exec(function (err, events) {
       
