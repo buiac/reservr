@@ -103,8 +103,7 @@ module.exports = (function(config, db) {
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
 
             // shorten reservation url
-            var longUrl;
-            longUrl = 'http://reactor.reserver.net/' + theEvent._id + '/' + newReservation._id;
+            var longUrl = 'http://reactor.reserver.net/reservations/userview/' + newReservation._id;
 
             bitly.shorten(longUrl, function(err, response) {
 
@@ -119,7 +118,7 @@ module.exports = (function(config, db) {
 
               if(!process.env.OPENSHIFT_APP_NAME) {
                 
-                short_url = 'http://localhost:8080/' + theEvent._id + '/' + newReservation._id;
+                short_url = 'http://localhost:8080/reservations/userview/' + newReservation._id;
               
               }
 
@@ -194,6 +193,7 @@ module.exports = (function(config, db) {
 
   var view = function (req, res, next) {
     
+    console.log('view');
 
     // find all reservations for event
     db.reservations.find({
@@ -207,6 +207,32 @@ module.exports = (function(config, db) {
       }
 
       res.render('reservations', {
+        reservations: reservations
+      });
+
+    });
+
+  };
+
+  var userView = function (req, res, next) {
+
+    // find all reservations for event
+    db.reservations.findOne({
+      _id: req.params.reservationId
+    }).exec(function (err, reservation) {
+
+      console.log(reservation);
+
+      var reservations = [];
+      reservations.push(reservation);
+
+      if(err) {
+        return res.render('reservation-user', {
+          errors: err
+        });
+      }
+
+      res.render('reservation-user', {
         reservations: reservations
       });
 
@@ -240,7 +266,8 @@ module.exports = (function(config, db) {
   return {
     create: create,
     view: view,
-    reservationDelete: reservationDelete
+    reservationDelete: reservationDelete,
+    userView: userView
   };
 
 });

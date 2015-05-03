@@ -113,9 +113,10 @@ module.exports = (function() {
   app.get('/dashboard/event/:eventId/deleteimage/:pictureIndex', dashboard.eventDeleteImage);
 
   // reservations
-  app.get('/reservations/:eventId', reservations.view);
+  app.get('/reservations/:eventId', adminAuth, reservations.view);
   app.post('/reservations/:eventId', reservations.create);
-  app.get('/reservations/:eventId/delete/:reservationId', reservations.reservationDelete);
+  app.get('/reservations/:eventId/delete/:reservationId', adminAuth, reservations.reservationDelete);
+  app.get('/reservations/userview/:reservationId', reservations.userView);
 
   // start express server
   app.listen(config.port, config.ipAddress, function() {
