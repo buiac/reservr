@@ -32,21 +32,66 @@
         <tbody>
         
           <% reservations.forEach(function(reservation){ %>
+            
+            <% if (!reservation.waiting) { %>
+              <tr>
+                <td>
+                  <%= reservation.email %>
+                </td>
+                <td>
+                  <%= reservation.seats %>
+                </td>
+                <td>
+                  <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                    <i class="fa fa-times-circle"></i>
+                    Delete Reservation
+                  </a>
+                </td>
+              </tr>
+            <% } %>
 
-            <tr>
-              <td>
-                <%= reservation.email %>
-              </td>
-              <td>
-                <%= reservation.seats %>
-              </td>
-              <td>
-                <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
-                  <i class="fa fa-times-circle"></i>
-                  Delete Reservation
-                </a>
-              </td>
-            </tr>
+          <% }) %>
+        
+        </tbody>
+      </table>
+
+
+      <h3>
+        Waiting list
+      </h3>
+      
+      <table class="table-reservations">
+        <thead>
+          <tr>
+            <th>
+              Email
+            </th>
+            <th>
+              Seats
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        
+          <% reservations.forEach(function(reservation){ %>
+            
+            <% if (reservation.waiting) { %>
+              <tr>
+                <td>
+                  <%= reservation.email %>
+                </td>
+                <td>
+                  <%= reservation.seats %>
+                </td>
+                <td>
+                  <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                    <i class="fa fa-times-circle"></i>
+                    Delete Reservation
+                  </a>
+                </td>
+              </tr>
+            <% } %>
 
           <% }) %>
         

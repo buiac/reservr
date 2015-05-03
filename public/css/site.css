@@ -173,6 +173,26 @@ body {
   color: #333;
 }
 
+.no-more-seats .container-reserve{
+  background: #CCC;
+}
+
+.hide-if-seats {
+  display: none;
+}
+
+.no-more-seats .hide-if-seats {
+  display: block;
+}
+
+.show-if-seats {
+  display: block;
+}
+
+.no-more-seats .show-if-seats {
+  display: none;
+}
+
 .container-reserve-btn {
   overflow: hidden;
   padding: 1rem 2rem;
@@ -259,6 +279,10 @@ body {
   font-size: 14px;
   line-height: 3rem;
   vertical-align: middle;
+}
+
+#container-waiting {
+  background: #ccc;
 }
 
 /* footer

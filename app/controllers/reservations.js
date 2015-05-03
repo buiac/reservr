@@ -46,6 +46,7 @@ module.exports = (function(config, db) {
 
     var email = req.body.email.trim();
     var seats = req.body.seats.trim();
+    var waiting = req.body.waiting;
     var eventId = req.params.eventId;
 
 
@@ -59,7 +60,8 @@ module.exports = (function(config, db) {
     var reservation = {
       email: email,
       seats: seats,
-      eventId: eventId
+      eventId: eventId,
+      waiting: waiting
     };
 
     // find event and get details
@@ -73,12 +75,15 @@ module.exports = (function(config, db) {
 
       // check if there are seats available
       reservation.seats = parseInt(reservation.seats);
-      theEvent.seats = parseInt(theEvent.seats)
+      theEvent.seats = parseInt(theEvent.seats);
       
 
-      if (theEvent.seats > reservation.seats) {
+      if ((theEvent.seats > 0 && theEvent.seats >= reservation.seats) || reservation.waiting) {
 
-        theEvent.seats = theEvent.seats - reservation.seats;
+        if (!reservation.waiting) {
+          theEvent.seats = theEvent.seats - reservation.seats;          
+        }
+        
         
         // update the number of seats available
         db.events.update({'_id': theEvent._id}, theEvent, function (err, num, newEvent){

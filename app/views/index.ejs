@@ -133,13 +133,15 @@
             
           <% } %>
           
-          <div class="row reserve-actions">
-          
+          <div class="row reserve-actions<%  if (event.seats == 0) {%> no-more-seats<% } %>">
+            
             <div class="medium-6 columns">
               
               <div class="container-reserve">
                 <div class="container-reserve-btn">
-                  Rezervă locuri
+                  
+                  <span class="hide-if-seats">Lista de asteptare</span>
+                  <span class="show-if-seats">Rezervă locuri</span>
                 </div>
                 
                 <form class="container-reserve-form">
@@ -151,13 +153,24 @@
                   
                   <label>
                     Numar de locuri
-                    <input type="number" min="1" max="5" name="seats" class="reserve-seats" required>
+                    <input type="number" min="1" max="5" name="seats" class="reserve-seats" value="1" required>
                   </label>
 
                   <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
                   
+                  <% if (event.seats > 0) { %>
+                    
+                    <input type="hidden" name="waiting" class="reserve-waiting" value="false">
+
+                  <% } else { %>
+                    
+                    <input type="hidden" name="waiting" class="reserve-waiting" value="true">
+
+                  <% } %>
+                  
                   <button type="submit">
-                    Rezervă locuri
+                    <span class="hide-if-seats">Adauga-ma pe lista de asteptare</span>
+                    <span class="show-if-seats">Rezervă locuri</span>
                   </button>
                   
                   <span class="container-reserve-form-success">
@@ -176,10 +189,19 @@
             </div>
             
             <div class="medium-6 columns">
-              <span class="free-seats">
-                <%= event.seats %> locuri disponibile
-              </span>
+              
+
+                <span class="free-seats show-if-seats">
+                  <%= event.seats %> locuri disponibile
+                </span>
+
+                <span class="free-seats hide-if-seats">
+                  Locuri epuizate
+                </span>
+
+              
             </div>
+            
             
           </div>
           
