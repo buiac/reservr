@@ -30,7 +30,7 @@ module.exports = (function(config, db) {
   // setup text for the user email
   var userEmailSetup = {
     subject: 'Rezervarea a fost facuta',
-    text: 'Salut, \n Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. \n  \n O zi cat mai buna iti dorim.' 
+    text: 'Salut, <br /><br /> Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> O zi cat mai buna iti dorim.' 
   };
 
   //Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%.
@@ -38,7 +38,7 @@ module.exports = (function(config, db) {
   // setup text for the owner email
   var ownerEmailSetup = {
     subject: 'O noua rezervare la "%EVENTNAME%"',
-    text: 'Salut, \n O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. \n O zi cat mai buna iti dorim.'
+    text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
   };
 
   var create = function (req, res, next) {
@@ -134,7 +134,7 @@ module.exports = (function(config, db) {
                 from: config.email,
                 to: newReservation.email,
                 subject: userEmailSetup.subject,
-                text: userEmailSetup.text
+                html: userEmailSetup.text
 
               }, function (err, info) {
                 
@@ -167,7 +167,7 @@ module.exports = (function(config, db) {
               from: config.email,
               to: ownerEmail,
               subject: ownerEmailSetup.subject,
-              text: ownerEmailSetup.text
+              html: ownerEmailSetup.text
             }, function (err, info) {
               
               console.log(err);
