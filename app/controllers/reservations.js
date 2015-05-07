@@ -27,21 +27,21 @@ module.exports = (function(config, db) {
     }
   }));
 
-  // setup text for the user email
-  var userEmailSetup = {
-    subject: 'Rezervarea a fost facuta',
-    text: 'Salut, <br /><br /> Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> O zi cat mai buna iti dorim.' 
-  };
-
-  //Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%.
-
-  // setup text for the owner email
-  var ownerEmailSetup = {
-    subject: 'O noua rezervare la "%EVENTNAME%"',
-    text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
-  };
-
   var create = function (req, res, next) {
+
+    // setup text for the user email
+    var userEmailSetup = {
+      subject: 'Rezervarea a fost facuta',
+      text: 'Salut, <br /><br /> Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> O zi cat mai buna iti dorim.' 
+    };
+
+    //Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%.
+
+    // setup text for the owner email
+    var ownerEmailSetup = {
+      subject: 'O noua rezervare la "%EVENTNAME%"',
+      text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
+    };
     
     req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
     req.checkBody('seats', 'Va rugam sa completati numarul de locuri.').notEmpty();
@@ -71,6 +71,7 @@ module.exports = (function(config, db) {
       _id: reservation.eventId
     }).exec(function (err, theEvent) {
 
+
       if(err) {
         res.status(400).json(err);
       }
@@ -78,11 +79,11 @@ module.exports = (function(config, db) {
       // check if there are seats available
       reservation.seats = parseInt(reservation.seats);
       theEvent.seats = parseInt(theEvent.seats);
-      
 
       if ((theEvent.seats > 0 && theEvent.seats >= reservation.seats) || reservation.waiting === 'true') {
 
-        if (reservation.waiting === 'false') {
+
+        if (!reservation.waiting || reservation.waiting === 'false') {
           
           theEvent.seats = theEvent.seats - reservation.seats;
 
@@ -91,6 +92,7 @@ module.exports = (function(config, db) {
         
         // update the number of seats available
         db.events.update({'_id': theEvent._id}, theEvent, function (err, num, newEvent){
+
 
           // add the reservation to the database
           db.reservations.insert(reservation, function (err, newReservation) {
@@ -251,10 +253,7 @@ module.exports = (function(config, db) {
 
           // add the reservation to the database
           db.reservations.update({'_id': req.params.reservationId}, reservation, function (err, newReservation) {
-            console.log(reservation);
-            console.log('----------');
-            console.log(newReservation);
-
+            
             if (err) {
               res.status(400).json(err);
               return;
@@ -357,8 +356,7 @@ module.exports = (function(config, db) {
 
   var view = function (req, res, next) {
     
-    console.log('view');
-
+    
     // find all reservations for event
     db.reservations.find({
       eventId: req.params.eventId
