@@ -42,7 +42,8 @@ module.exports = (function(config, db) {
     });
         
     var dateFilters = {
-      $lte: defaultInterval
+      $lte: defaultInterval,
+      $gte: new Date()
     };
     
     if(startDate) {
