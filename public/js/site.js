@@ -34,6 +34,7 @@
   var submitReserveForm = function() {
     
     var $this = $(this);
+    var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
     var seats = $this.find('.reserve-seats').val();
     var eventId = $this.find('.reserve-id').val();
@@ -45,6 +46,7 @@
     $.ajax('/reservations/' + eventId, {
       type: 'POST',
       data: {
+        name: name,
         email: email,
         seats: seats
       },
@@ -75,8 +77,6 @@
     return false;
     
   };
-
-  
 
   $('.container-reserve form').on('submit', submitReserveForm);
   

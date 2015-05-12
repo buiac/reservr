@@ -21,6 +21,9 @@
         <thead>
           <tr>
             <th>
+              Name
+            </th>
+            <th>
               Email
             </th>
             <th>
@@ -35,6 +38,9 @@
             
             <% if (!reservation.waiting) { %>
               <tr>
+                <td>
+                  <%= reservation.name %>
+                </td>
                 <td>
                   <%= reservation.email %>
                 </td>
@@ -64,6 +70,9 @@
         <thead>
           <tr>
             <th>
+              Name
+            </th>
+            <th>
               Email
             </th>
             <th>
@@ -78,6 +87,9 @@
             
             <% if (reservation.waiting) { %>
               <tr>
+                <td>
+                  <%= reservation.name %>
+                </td>
                 <td>
                   <%= reservation.email %>
                 </td>

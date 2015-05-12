@@ -43,9 +43,11 @@ module.exports = (function(config, db) {
       text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
     };
     
+    req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
     req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
     req.checkBody('seats', 'Va rugam sa completati numarul de locuri.').notEmpty();
 
+    var name = req.body.name.trim();
     var email = req.body.email.trim();
     var seats = req.body.seats;
     var waiting = req.body.waiting;
@@ -60,6 +62,7 @@ module.exports = (function(config, db) {
     }
 
     var reservation = {
+      name: name,
       email: email,
       seats: seats,
       eventId: eventId,
