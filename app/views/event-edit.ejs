@@ -36,7 +36,29 @@
 
     <div class="row">
       <div class="medium-6 columns">
-      
+        
+        <label style="margin-bottom: 10px;">Event organizer:</label>
+
+        <div class="row">
+          
+          <div class="medium-6 columns">
+            <label>REACTOR:
+
+              <input type="radio" placeholder="" name="mclistid" value="7e47ecc7b0" required <% if (theEvent.mclistid === '7e47ecc7b0') { %> checked <% } %> />
+
+            </label>
+
+          </div>
+
+          <div class="medium-6 columns">
+            <label>Mini REACTOR:
+
+              <input type="radio" placeholder="" name="mclistid" value="2df008d384" <% if (theEvent.mclistid === '2df008d384') { %> checked <% } %> required />
+
+            </label>  
+          </div>
+
+        </div>
 
         <label>Event name:
 

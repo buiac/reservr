@@ -14,6 +14,8 @@ module.exports = (function(config, db) {
   var smtpTransport = require('nodemailer-smtp-transport');
   var Bitly = require('bitly');
   var bitly = new Bitly('reservr', 'R_0f028c7d50e844f283a6c11b90600234');
+  var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
+  var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
   
   moment.locale('ro');
 
@@ -26,6 +28,33 @@ module.exports = (function(config, db) {
       pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
     }
   }));
+
+  var addUserToMailingList = function (reservation) {
+    var params = {
+      update_existing: true,
+      double_optin: false,
+      send_welcome: false,
+      id: reservation.mclistid,
+      email: {
+        email: reservation.email
+      },
+      merge_vars: {
+        FNAME: reservation.name.split(' ')[0] || '',
+        LNAME:  reservation.name.split(' ')[1] || '' 
+      }
+    };
+
+    mc.lists.subscribe(params, function(data) {
+      console.log('success');
+      console.log(data);
+
+    }, function(err) {
+
+      console.log('error');
+      console.log(err);
+
+    });
+  };
 
   var create = function (req, res, next) {
 
@@ -52,7 +81,7 @@ module.exports = (function(config, db) {
     var seats = req.body.seats;
     var waiting = req.body.waiting;
     var eventId = req.params.eventId;
-
+    var mclistid = req.body.mclistid;
 
     var errors = req.validationErrors();
 
@@ -66,7 +95,8 @@ module.exports = (function(config, db) {
       email: email,
       seats: seats,
       eventId: eventId,
-      waiting: waiting
+      waiting: waiting,
+      mclistid: mclistid
     };
 
     // find event and get details
@@ -143,8 +173,7 @@ module.exports = (function(config, db) {
 
               }, function (err, info) {
                 
-                console.log(err);
-                console.log(info);
+                
 
               });
 
@@ -175,10 +204,10 @@ module.exports = (function(config, db) {
               html: ownerEmailSetup.text
             }, function (err, info) {
               
-              console.log(err);
-              console.log(info);
-              
             });
+
+            // add user to mailing list
+            addUserToMailingList(newReservation);
 
             // send response to client
             res.json({

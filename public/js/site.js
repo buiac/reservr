@@ -30,7 +30,6 @@
   
   $('.container-reserve-btn').on('click', toggleReservationBox);
   
-  
   var submitReserveForm = function() {
     
     var $this = $(this);
@@ -38,6 +37,12 @@
     var email = $this.find('.reserve-email').val();
     var seats = $this.find('.reserve-seats').val();
     var eventId = $this.find('.reserve-id').val();
+    var mclistid = $this.find('.reserve-newsletter').val();
+
+    // send nothing if user does not check checkbox
+    if (!$this.find('.reserve-newsletter')[0].checked) {
+      mclistid = '';
+    }
     
     $this.removeClass('container-reserve-form--success container-reserve-form--error');
     
@@ -48,7 +53,8 @@
       data: {
         name: name,
         email: email,
-        seats: seats
+        seats: seats,
+        mclistid: mclistid
       },
       success: function(res) {
         

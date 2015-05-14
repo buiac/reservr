@@ -123,6 +123,7 @@ module.exports = (function(config, db) {
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
     var location = (req.body.location) ? req.body.location.trim() : '';
     var activeImage = parseInt(req.body.activeImage || 0);
+    var mclistid = req.body.mclistid.trim();
 
 
     var theEvent = {
@@ -133,7 +134,8 @@ module.exports = (function(config, db) {
       date: new Date(req.body.date),
       seats: seats,
       location: location,
-      activeImage: activeImage
+      activeImage: activeImage,
+      mclistid: mclistid // mailchimp list id
     };
     
     // check if there's an image
