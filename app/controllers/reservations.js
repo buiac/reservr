@@ -69,7 +69,7 @@ module.exports = (function(config, db) {
     // setup text for the owner email
     var ownerEmailSetup = {
       subject: 'O noua rezervare la "%EVENTNAME%"',
-      text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
+      text: 'Salut, <br /><br /> O noua rezervare de %SEATS% locuri a fost facuta pentru evenimentul "%EVENTNAME%" de %EVENTDATE% de catre %USERNAME%, %USEREMAIL%. <br /><br /> O zi cat mai buna iti dorim.'
     };
     
     req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
@@ -187,6 +187,7 @@ module.exports = (function(config, db) {
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTNAME%', theEvent.name);
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
             ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
+            ownerEmailSetup.text = ownerEmailSetup.text.replace('%USERNAME%', newReservation.name);
 
             var ownerEmail = 'sebi.kovacs@gmail.com';
 
