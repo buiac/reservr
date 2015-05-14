@@ -207,7 +207,9 @@ module.exports = (function(config, db) {
             });
 
             // add user to mailing list
-            addUserToMailingList(newReservation);
+            if (newReservation.mclistid) {
+              addUserToMailingList(newReservation);
+            }
 
             // send response to client
             res.json({
