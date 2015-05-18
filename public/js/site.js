@@ -85,6 +85,44 @@
   };
 
   $('.container-reserve form').on('submit', submitReserveForm);
+
+
+  var sc = $('.seat-map').seatCharts({
+          map: [
+              'aaaaa__aaaaaa',
+              'aaaaa__aaaaaa',
+              'aaaaa__aaaaa',
+              '____________',
+              '____________',
+              'aaaaa__aaaaa',
+              'aaaaa__aaaaa',
+              'aaaaa__aaaaa',
+          ],
+          seats: {
+              a: {
+                  price   : 99.99,
+                  classes : 'front-seat' //your custom CSS class
+              }
+
+          },
+          click: function () {
+            console.log(this.settings);
+              if (this.status() == 'available') {
+                  //do some stuff, i.e. add to the cart
+                  return 'selected';
+              } else if (this.status() == 'selected') {
+                  //seat has been vacated
+                  return 'available';
+              } else if (this.status() == 'unavailable') {
+                  //seat has been already booked
+                  return 'unavailable';
+              } else {
+                  return this.style();
+              }
+          }
+      });
+
+      
   
   
   

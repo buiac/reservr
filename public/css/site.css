@@ -302,3 +302,7 @@ body {
 .clearing-thumbs li {
   max-width: 100%;
 }
+
+div.seatCharts-row {
+  height: 22px;
+}

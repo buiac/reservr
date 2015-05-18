@@ -19,6 +19,18 @@ module.exports = (function() {
   var basicAuth = require('basic-auth-connect');
 
   var app = express();
+  var http = require('http');
+  var server = http.createServer(app);
+  var io = require('socket.io').listen(server);
+
+  io.on('connection', function(socket){
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+      });
+  });
+
+
 
   // validation library for whatever comes in through the forms
   var expressValidator = require('express-validator');
@@ -122,9 +134,9 @@ module.exports = (function() {
   app.post('/reservations/update/:eventId', reservations.update);
 
   // start express server
-  app.listen(config.port, config.ipAddress, function() {
+  server.listen(config.port, config.ipAddress, function() {
     console.log(
-      '%s: Node server started on %s:%d ...',
+      '%s: Node server started on %s:%d ...\n\n\n',
       Date(Date.now()),
       config.ipAddress,
       config.port
