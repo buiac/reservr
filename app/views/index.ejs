@@ -161,13 +161,14 @@
                     <input type="number" min="1" max="5" name="seats" class="reserve-seats" value="1" required>
                   </label>
 
-                  <label>
+                  <input type="hidden" class="reserve-newsletter" name="mclistid" value="<%= event.mclistid || '' %>">
+                  <!-- <label>
 
                     <input type="checkbox" name="mclistid" class="reserve-newsletter" value="<%= event.mclistid || '' %>">
 
                     <span data-tooltip aria-haspopup="true" class="has-tip" title="Doriți să primiți la adresa de email înscrisă aici newsletterul săptămânal cu programul REACTOR (de la care vă puteți dezabona ulterior)?">Programul saptamanal pe mail?</span>
                     
-                  </label>
+                  </label> -->
 
                   <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
                   
