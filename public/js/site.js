@@ -37,6 +37,7 @@
     var email = $this.find('.reserve-email').val();
     var seats = $this.find('.reserve-seats').val();
     var eventId = $this.find('.reserve-id').val();
+    var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
 
     // send nothing if user does not check checkbox
@@ -54,7 +55,8 @@
         name: name,
         email: email,
         seats: seats,
-        mclistid: mclistid
+        mclistid: mclistid,
+        waiting: waiting
       },
       success: function(res) {
         
