@@ -61,7 +61,9 @@ module.exports = (function(config, db) {
     // setup text for the user email
     var userEmailSetup = {
       subject: 'Rezervarea a fost facuta',
-      text: 'Salut, <br /><br /> Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> O zi cat mai buna iti dorim.' 
+      subjectAlt: 'Ai fost inclus pe lista de asteptare',
+      text: 'Salut, <br /><br /> Ai facut o rezervare de %SEATS% locuri pentru evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> O zi cat mai buna iti dorim.',
+      textAlt: 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru %SEATS% locuri la evenimentul "%EVENTNAME%" de %EVENTDATE%. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> O zi cat mai buna iti dorim.' 
     };
 
     //Poti modifica oricand rezervarea accesand acest link: %RESERVATIONURL%.
@@ -141,6 +143,11 @@ module.exports = (function(config, db) {
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
             userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
 
+            // replace email template variables
+            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%SEATS%', newReservation.seats);
+            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTNAME%' , theEvent.name);
+            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
+
             // shorten reservation url
             var longUrl = 'http://reactor.reserver.net/reservations/userview/' + newReservation._id;
 
@@ -161,20 +168,33 @@ module.exports = (function(config, db) {
               
               }
 
-              userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
+              //userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
+
+              var emailParams = null;
 
               // send mail to user
-              transport.sendMail({
-                
-                from: config.email,
-                to: newReservation.email,
-                subject: userEmailSetup.subject,
-                html: userEmailSetup.text
+              if (reservation.waiting) {
+                emailParams = {
+                  from: config.email,
+                  to: newReservation.email,
+                  subject: userEmailSetup.subjectAlt,
+                  html: userEmailSetup.textAlt
+                }
 
-              }, function (err, info) {
-                
-                
+              } else {
 
+                emailParams = {
+                  from: config.email,
+                  to: newReservation.email,
+                  subject: userEmailSetup.subject,
+                  html: userEmailSetup.text
+                }
+
+              }
+
+              transport.sendMail(emailParams, function (err, info) {
+                console.log(err);
+                console.log(info);
               });
 
             
