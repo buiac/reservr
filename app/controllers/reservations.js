@@ -173,7 +173,7 @@ module.exports = (function(config, db) {
               var emailParams = null;
 
               // send mail to user
-              if (reservation.waiting) {
+              if (reservation.waiting === 'true') {
                 emailParams = {
                   from: config.email,
                   to: newReservation.email,

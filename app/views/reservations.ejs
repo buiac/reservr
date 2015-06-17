@@ -36,7 +36,7 @@
         
           <% reservations.forEach(function(reservation){ %>
             
-            <% if (!reservation.waiting) { %>
+            <% if (reservation.waiting === 'false') { %>
               <tr>
                 <td>
                   <%= reservation.name %>
@@ -85,7 +85,7 @@
         
           <% reservations.forEach(function(reservation){ %>
             
-            <% if (reservation.waiting) { %>
+            <% if (reservation.waiting === 'true') { %>
               <tr>
                 <td>
                   <%= reservation.name || '' %>
