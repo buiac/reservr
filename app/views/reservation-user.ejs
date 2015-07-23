@@ -16,75 +16,43 @@
       <h3>
         Reservations
       </h3>
-        
+          
+      <% reservations.forEach(function(reservation){ %>
 
-      <table class="table-reservations">
-        <thead>
-          <tr>
-            <th>
-              Spectacol
-            </th>
-            <th>
-              Email
-            </th>
-            <th>
-              Locuri rezervate
-            </th>
-            <th>Locuri disponibile</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        
-          <% reservations.forEach(function(reservation){ %>
+        <div class="row">
+          
+          <div class="small-6 columns">
+            <img src="<%= reservation.event.images[0].path %>" alt="">    
+          </div>
+
+          <div class="small-6 columns">
             
-            <tr>
-
-              <td>
-                <a href="/<%= reservation.event._id %>" target="_blank"><%= reservation.event.name %></a>
-              </td>
+            <dl>
+              <dt>Spectacol</dt>
+              <dd><%= reservation.event.name %></dd>
+              <dt>Email</dt>
+              <dd><%= reservation.email %></dd>
+              <dt>Seats</dt>
+              <dd><%= reservation.seats %></dd>
+              <dt>Total Seats Left</dt>
+              <dd><%= reservation.event.seats %></dd>
+            </dl>
               
-              <td>
-                <%= reservation.email %>
-              </td>
+            <form action="">
+              <input type="text" value="<%= reservation.seats %>">
+              <a href="" class="button">update</a>
+            </form>
 
-              <td>
-                
-                <form id="reservations-update">
-                  
-                  <input type="hidden" name="email" class="reserve-email" value="<%= reservation.email %>" required>
+            <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="button alert" style="float:right">
+              <i class="fa fa-times-circle"></i>
+              Sterge rezervarea
+            </a>
+          </div>
 
-                  <input type="hidden" name="waiting" class="reserve-waiting" value="<%= reservation.waiting %>" required>
-
-                  <input type="hidden" name="eventId" class="event-id" value="<%= reservation.event._id %>">
-
-                  <input type="hidden" name="reservationId" class="reserve-id" value="<%= reservation._id %>">
-
-                  <input type="number" min="1" max="5" name="seats" class="reserve-seats" value="<%= reservation.seats %>" >
-
-                  <button type="submit" class="button tiny">Save</submit>
-
-                </form>
-
-              </td>
-
-              <td style="text-align: center;">
-                <%= reservation.event.seats %>
-              </td>
-              
-              <td>
-                <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation" style="float:right">
-                  <i class="fa fa-times-circle"></i>
-                  Sterge rezervarea
-                </a>
-              </td>
-            </tr>
-
-          <% }) %>
+        </div>
+          
+      <% }) %>
         
-        </tbody>
-      </table>
-
     </div>
   </div>
 
