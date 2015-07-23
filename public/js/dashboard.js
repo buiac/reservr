@@ -102,8 +102,17 @@
 
   $('#reservations-update').on('submit', submitUpdateForm);
 
+  $('a.alert').click(function (e) {
+    
+    e.preventDefault();
 
+    var conf = confirm("Are you sure you want to cancel?");
 
+    if (conf === true) {
+      window.location.href = 'http://' + window.location.host + $(this).attr('href');
+    } 
+
+  });
   
 })(this);
 
