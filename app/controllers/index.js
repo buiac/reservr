@@ -13,7 +13,7 @@ module.exports = (function(config, db) {
   
   moment.locale('ro');
 
-  var view = function(req, res, next) {
+  var findEvents = function (req, res, next) {
 
     var startDate = req.query.startDate || '';
     var endDate = req.query.endDate || '';
@@ -40,7 +40,7 @@ module.exports = (function(config, db) {
       startDate: moment().format('YYYY-MM-DD'),
       endDate: moment().add(3, 'months').format('YYYY-MM-DD')
     });
-        
+
     var dateFilters = {
       $lte: defaultInterval,
       $gte: new Date()
@@ -65,7 +65,8 @@ module.exports = (function(config, db) {
       }
       return false;
     });
-    
+
+
     db.events
     .find({
       date: dateFilters
@@ -101,19 +102,84 @@ module.exports = (function(config, db) {
         }
 
       });
+
+      req.events = events;
+
+      return next();
       
-      res.render('index', {
-        events: events,
-        startDate: startDate,
-        endDate: endDate,
-        intervals: intervals,
-        activeInterval: activeInterval,
-        
-        moment: moment,
-        marked: marked
+    });
+
+
+
+  };
+
+  var findReservations = function (req, res, next) {
+    // add number of reservations to each event
+    
+    req.events.forEach(function (ev) {
+
+      db.reservations.find({
+        eventId: ev._id
+      }).exec(function (err, reservations) {
+
+        if(err) {
+          return res.render('index', {
+            errors: err
+          });
+        }
+
+        ev.reservations = reservations;
+
       });
       
     });
+    
+    return next();
+
+  };
+
+  var view = function(req, res, next) {
+
+    var startDate = req.query.startDate || '';
+    var endDate = req.query.endDate || '';
+    
+    var defaultInterval = moment().add(30, 'days');
+    
+    var intervals = [];
+    var activeInterval = {};
+    
+    intervals.push({
+      label: '7 zile',
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().add(7, 'days').format('YYYY-MM-DD')
+    });
+    
+    intervals.push({
+      label: '30 de zile',
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: defaultInterval.format('YYYY-MM-DD')
+    });
+    
+    intervals.push({
+      label: '3 luni',
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().add(3, 'months').format('YYYY-MM-DD')
+    });
+        
+    
+
+    res.render('index', {
+      events: req.events,
+      startDate: startDate,
+      endDate: endDate,
+      intervals: intervals,
+      activeInterval: activeInterval,
+      
+      moment: moment,
+      marked: marked
+    });
+  
+  
     
 
   };
@@ -146,13 +212,32 @@ module.exports = (function(config, db) {
         img = ev.images.splice(activeImage, 1);
         ev.images.unshift(img[0]);
 
-      }      
+      }
+
+
+
+      // add number of reservations to each event
+      db.reservations.find({
+        eventId: ev._id
+      }).exec(function (err, reservations) {
+
+        if(err) {
+          return res.render('index', {
+            errors: err
+          });
+        }
+
+        ev.reservations = reservations;
+
+        res.render('event', {
+          events: [ev],
+          moment: moment,
+          marked: marked
+        });
+
+      });   
       
-      res.render('event', {
-        events: [ev],
-        moment: moment,
-        marked: marked
-      });
+      
       
     });
     
@@ -161,7 +246,9 @@ module.exports = (function(config, db) {
 
   return {
     view: view,
-    eventView: eventView
+    eventView: eventView,
+    findReservations: findReservations,
+    findEvents: findEvents
   };
 
 });

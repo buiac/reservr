@@ -112,12 +112,18 @@
               <i class="fa fa-map-marker"></i>
               
               <%= event.location || '' %>
+
             </div>
+
           </div>  
           
           
           <div class="event-description">
+            
+            <strong><%= event.reservations %></strong>
+
             <%- marked(event.description) %>
+
           </div>
           
           <% if(event.description.length > 300) { %>

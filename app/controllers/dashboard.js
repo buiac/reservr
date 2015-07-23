@@ -96,6 +96,22 @@ module.exports = (function(config, db) {
 
         }
 
+        // get the number of reservations
+        db.reservations.find({
+          eventId: ev._id
+        }).exec(function (err, reservations) {
+
+          if(err) {
+            return res.render('dashboard', {
+              errors: err
+            });
+          }
+
+          ev.reservations = reservations;
+          console.log(ev);
+
+        });
+
       });
 
 

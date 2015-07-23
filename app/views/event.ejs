@@ -96,6 +96,7 @@
           
           
           <div class="event-description">
+
             <%- marked(event.description) %>
           </div>
           
@@ -112,6 +113,8 @@
             
           <% } %>
           
+
+
           <div class="row reserve-actions<%  if (event.seats == 0) {%> no-more-seats<% } %>">
             
             <div class="medium-8 columns">

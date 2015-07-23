@@ -101,7 +101,7 @@ module.exports = (function() {
   var reservations = require('./app/controllers/reservations.js')(config, db);
 
   // public routes
-  app.get('/', index.view);
+  app.get('/', index.findEvents, index.findReservations, index.view);
   app.get('/event/:eventId', index.eventView);
   
   // dashboard
