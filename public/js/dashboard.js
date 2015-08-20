@@ -52,56 +52,8 @@
 
   });
 
-  var submitUpdateForm = function() {
 
-    var $this = $(this);
-    var email = $this.find('.reserve-email').val();
-    var seats = $this.find('.reserve-seats').val();
-    var eventId = $this.find('.event-id').val();
-    var reservationId = $this.find('.reserve-id').val();
-    
-    $this.removeClass('container-reserve-form--success container-reserve-form--error');
-    
-    $this.addClass('container-reserve-form--loading');
-    
-    $.ajax('/reservations/update/' + eventId, {
-      type: 'POST',
-      data: {
-        email: email,
-        seats: seats,
-        eventId: eventId,
-        reservationId: reservationId
-      },
-      success: function(res) {
-        
-        $this.addClass('container-reserve-form--success');
-        
-      },
-      error: function(err) {
-        
-        $this.addClass('container-reserve-form--error');
-        
-        // allow me to try again 
-        setTimeout(function() {
-          
-          $this.removeClass('container-reserve-form--error');
-          
-        }, 5000);
-        
-      },
-      complete: function() {
-       
-        $this.removeClass('container-reserve-form--loading');
-        
-      }
-    });
-    
-    return false;
-    
-  };
-
-  $('#reservations-update').on('submit', submitUpdateForm);
-
+  // alert user before he deletes an event in dashboard
   $('a.alert').click(function (e) {
     
     e.preventDefault();
@@ -113,6 +65,73 @@
     } 
 
   });
+
+  // Allow user to update number of reserved seats
+  var submitUpdateReservationForm = function (e) {
+    
+    e.preventDefault();
+
+    var $this = $(this);
+    var reservationId = $this.find('.reserve-rid').val();
+    var seats = $this.find('.reserve-seats').val();
+    var eventId = $this.find('.reserve-event-id').val();
+
+    // show loading
+    $('.reservation-form-wrap').addClass('reservation-form--loading');
+
+
+    setTimeout(function () {
+      $.ajax('/reservations/userview/' + reservationId, {
+        type: 'POST',
+        data: {
+          reservationId: reservationId,
+          eventId: eventId,
+          seats: seats
+        },
+        success: function(res) {
+
+          $('.reservation-form-wrap').attr('class','reservation-form-wrap reservation-form--hide')
+          
+        },
+        error: function(err) {
+          
+          console.log('error');
+          
+        },
+        complete: function() {
+         
+                  console.log('complete');
+          
+        }
+      });
+    }, 1000);
+
+
+  }
+
+  
+  $('.update-reservation').on('submit', submitUpdateReservationForm);
+
+
+  // Toggle reservations form in user view for reservation
+  $('.toggle-reservation-form').on('click', function (e) {
+    
+    e.preventDefault();
+
+    $form = $('.reservation-form-wrap');
+
+    if ($form.attr('class').indexOf('reservation-form--hide') >= 0) {
+
+      $form.attr('class', 'reservation-form-wrap reservation-form--show');
+    
+    } else {
+
+      $form.attr('class', 'reservation-form-wrap reservation-form--hide');
+
+    }
+
+  });
+
   
 })(this);
 

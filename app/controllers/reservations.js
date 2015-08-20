@@ -248,6 +248,34 @@ module.exports = (function(config, db) {
 
   };
 
+  var update = function (req, res, next) {
+    
+    db.reservations.update({
+      '_id': req.body.reservationId
+    }, { $set: { seats: req.body.seats } }, function (err, num) {
+
+      if (num >= 1) {
+        
+
+        db.reservations.find( { eventId: req.body.eventId } ).exec(function (err, reservations) {
+          var m = 0;
+
+          reservations.forEach(function (item) {
+            
+            m = m + parseInt(item.seats);
+          
+          });
+
+          res.status(200).json( { msg: 'All good', totalSeats: m } );
+
+        });
+
+      }
+      
+    });
+
+  };
+
   var view = function (req, res, next) {
     
     
@@ -272,11 +300,11 @@ module.exports = (function(config, db) {
 
   var userView = function (req, res, next) {
 
+
     // find all reservations for event
     db.reservations.findOne({
       _id: req.params.reservationId
     }).exec(function (err, reservation) {
-
 
       if(err) {
         return res.render('reservation-user', {

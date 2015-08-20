@@ -117,9 +117,9 @@ module.exports = (function() {
   app.get('/reservations/:eventId', adminAuth, reservations.view);
   app.post('/reservations/:eventId', reservations.create);
   app.get('/reservations/:eventId/delete/:reservationId', adminAuth, reservations.reservationDelete);
+  
   app.get('/reservations/userview/:reservationId', reservations.userView);
-
-  app.post('/reservations/update/:eventId', reservations.update);
+  app.post('/reservations/userview/:reservationId', reservations.update);
 
   // start express server
   app.listen(config.port, config.ipAddress, function() {

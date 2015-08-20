@@ -60,7 +60,11 @@
       },
       success: function(res) {
         
+        
         $this.addClass('container-reserve-form--success');
+        
+        // redirect link
+        $this.find('a.user-reservation').attr('href', '/reservations/userview/' + res.reservation._id);
         
       },
       error: function(err) {

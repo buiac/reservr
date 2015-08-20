@@ -151,3 +151,43 @@
   top: 27px;
   left: -17px;
 }
+
+
+.reservation-form--hide .update-reservation {
+  display: none;
+}
+
+.reservation-form--show .seats {
+  display: none;
+}
+
+.reservation-form--loading .update-reservation {
+  position: relative;
+}
+
+.reservation-form--loading .update-reservation:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #0078a0;
+  width: 303px;
+  height: 37px;
+  z-index: 3;
+}
+
+.reservation-form--loading .update-reservation:after {
+  content: '';
+  width: 15px;
+  height: 15px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  position: absolute;
+  top: 11px;
+  left: 144px;
+  z-index: 4;
+  animation: rotate 1.4s infinite linear;
+
+}

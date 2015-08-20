@@ -21,32 +21,77 @@
 
         <div class="row">
           
-          <div class="small-6 columns">
+          <div class="small-4 columns">
             <img src="<%= reservation.event.images[0].path %>" alt="">    
           </div>
 
-          <div class="small-6 columns">
+          <div class="small-8 columns">
             
             <dl>
+
               <dt>Spectacol</dt>
               <dd><%= reservation.event.name %></dd>
+
               <dt>Email</dt>
-              <dd><%= reservation.email %></dd>
-              <dt>Seats</dt>
-              <dd><%= reservation.seats %></dd>
-              <dt>Total Seats Left</dt>
+              <dd>
+                
+                <%= reservation.email %>
+
+              </dd>
+
+              <dt>Locuri rezervate de tine</dt>
+              <dd class="reservation-form-wrap reservation-form--hide">
+                
+                <span class="seats"><%= reservation.seats %></span> 
+                
+                <form action="" class="update-reservation">
+
+                  <div class="row">
+                    
+                    <div class="large-6 columns">
+                      
+                      <div class="row collapse postfix-round">
+                        
+                        <div class="small-9 columns">
+                          
+                          <input type="text" value="<%= reservation.seats %>" class="reserve-seats"> 
+                        
+                        </div>
+                        
+                        <div class="small-3 columns">
+                          
+                          <button type="submit" class="button postfix">Save</button>
+                        
+                        </div>
+                      
+                      </div>
+                    
+                    </div>
+                  
+                  </div>
+
+                  <input type="hidden" name="" class="reserve-rid" value="<%= reservation._id %>">
+                  <input type="hidden" name="" class="reserve-event-id" value="<%= reservation.event._id %>">
+
+                </form>
+
+                <a href="" class="toggle-reservation-form">modifica</a>
+
+              </dd>
+
+              <dt>Numar de locuri ramase</dt>
               <dd><%= reservation.event.seats %></dd>
+
             </dl>
               
-            <form action="">
-              <input type="text" value="<%= reservation.seats %>">
-              <a href="" class="button">update</a>
-            </form>
+            
 
-            <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="button alert" style="float:right">
+            <a href="/reservations/<%= reservation.eventId %>/delete/<%= reservation._id %>" class="button alert">
               <i class="fa fa-times-circle"></i>
               Sterge rezervarea
             </a>
+
+
           </div>
 
         </div>
