@@ -83,164 +83,202 @@ module.exports = (function(config, db) {
     var eventId = req.params.eventId;
     var mclistid = req.body.mclistid;
 
-    var errors = req.validationErrors();
+    // check if there is already a user that has a reservation with this email
+    // if he does just update the number of seats
+    // else proceed as before
 
-    if (errors) {
-      res.status(400).json(errors);
-      return;
-    }
+    // loop through all reservations
 
-    var reservation = {
-      name: name,
-      email: email,
-      seats: seats,
-      eventId: eventId,
-      waiting: waiting,
-      mclistid: mclistid
-    };
-
-    // find event and get details
-    db.events.findOne({
-      _id: reservation.eventId
-    }).exec(function (err, theEvent) {
-
-
-      if(err) {
-        res.status(400).json(err);
-      }
-
-      // check if there are seats available
-      reservation.seats = parseInt(reservation.seats);
-      theEvent.seats = parseInt(theEvent.seats);
-
-      if ((theEvent.seats > 0 && theEvent.seats >= reservation.seats) || reservation.waiting === 'true') {
-
-
-        if (!reservation.waiting || reservation.waiting === 'false') {
-          
-          theEvent.seats = theEvent.seats - reservation.seats;
-
-        }
-        
-        
-        // update the number of seats available
-        db.events.update({'_id': theEvent._id}, theEvent, function (err, num, newEvent){
-
-
-          // add the reservation to the database
-          db.reservations.insert(reservation, function (err, newReservation) {
-
-            if (err) {
-              res.status(400).json(err);
-              return;
-            }
-
-
-            // replace email template variables
-            userEmailSetup.text = userEmailSetup.text.replace('%SEATS%', newReservation.seats);
-            userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
-            userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
-
-            // replace email template variables
-            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%SEATS%', newReservation.seats);
-            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTNAME%' , theEvent.name);
-            userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
-
-            // shorten reservation url
-            var longUrl = 'http://reactor.reserver.net/reservations/userview/' + newReservation._id;
-
-            bitly.shorten(longUrl, function(err, response) {
-
-              if (err) {
-                
-                console.log(err);
-              
-              } 
-
-              // send email to user
-              var short_url = response.data.url;
-
-              if(!process.env.OPENSHIFT_APP_NAME) {
-                
-                short_url = 'http://localhost:8080/reservations/userview/' + newReservation._id;
-              
-              }
-
-              //userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
-
-              var emailParams = null;
-
-              // send mail to user
-              if (reservation.waiting === 'true') {
-                emailParams = {
-                  from: config.email,
-                  to: newReservation.email,
-                  subject: userEmailSetup.subjectAlt,
-                  html: userEmailSetup.textAlt
-                }
-
-              } else {
-
-                emailParams = {
-                  from: config.email,
-                  to: newReservation.email,
-                  subject: userEmailSetup.subject,
-                  html: userEmailSetup.text
-                }
-
-              }
-
-              transport.sendMail(emailParams, function (err, info) {
-                console.log(err);
-                console.log(info);
-              });
-            
-            });
-            
-            // replace template variables
-            ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%SEATS%', newReservation.seats);
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTNAME%', theEvent.name);
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
-            ownerEmailSetup.text = ownerEmailSetup.text.replace('%USERNAME%', newReservation.name);
-
-            var ownerEmail = 'sebi.kovacs@gmail.com';
-
-            if (req.subdomains && req.subdomains.length === 1) {
-
-              ownerEmail = 'rezervari.reactor@yahoo.ro';
-            
-            }
-
-            // send a mail to venue owner
-            transport.sendMail({
-              from: config.email,
-              to: ownerEmail,
-              subject: ownerEmailSetup.subject,
-              html: ownerEmailSetup.text
-            }, function (err, info) {
-              
-            });
-
-            // add user to mailing list
-            if (newReservation.mclistid) {
-              addUserToMailingList(newReservation);
-            }
-
-            // send response to client
-            res.json({
-              message: 'Create successful.',
-              reservation: newReservation
-            });
-
-          });
-
-        });
+    db.reservations.find({
+      email: email
+    }).exec(function (err, reservations) {
       
+      if (reservations && reservations.length) {
+
+        reservations.forEach(function (reservation) {
+          
+          if (reservation.eventId === eventId) {
+            
+            db.reservations.update( { eventId: eventId }, { $set: { seats: seats } }, {}, function (err, num) {
+
+              if (num && num > 0) {
+
+                res.json({
+                  message: 'Create successful.',
+                  reservation: reservation
+                });
+
+              }
+
+            });
+
+          }
+        });
+
       } else {
 
-        res.status(400).json({msg: 'Ne pare rau. Numarul locurilor rezervate e mai mare decat numarul locurilor disponibile. Actualizati pagina pentru a vedea numarul exact al locurilor disponibile.'});
+        var errors = req.validationErrors();
+
+        if (errors) {
+          res.status(400).json(errors);
+          return;
+        }
+
+        var reservation = {
+          name: name,
+          email: email,
+          seats: seats,
+          eventId: eventId,
+          waiting: waiting,
+          mclistid: mclistid
+        };
+
+        // find event and get details
+        db.events.findOne({
+          _id: reservation.eventId
+        }).exec(function (err, theEvent) {
+
+
+          if(err) {
+            res.status(400).json(err);
+          }
+
+          // check if there are seats available
+          reservation.seats = parseInt(reservation.seats);
+          theEvent.seats = parseInt(theEvent.seats);
+
+          if ((theEvent.seats > 0 && theEvent.seats >= reservation.seats) || reservation.waiting === 'true') {
+
+
+            if (!reservation.waiting || reservation.waiting === 'false') {
+              
+              theEvent.seats = theEvent.seats - reservation.seats;
+
+            }
+            
+            
+            // update the number of seats available
+            db.events.update({'_id': theEvent._id}, theEvent, function (err, num, newEvent){
+
+
+              // add the reservation to the database
+              db.reservations.insert(reservation, function (err, newReservation) {
+
+                if (err) {
+                  res.status(400).json(err);
+                  return;
+                }
+
+
+                // replace email template variables
+                userEmailSetup.text = userEmailSetup.text.replace('%SEATS%', newReservation.seats);
+                userEmailSetup.text = userEmailSetup.text.replace('%EVENTNAME%' , theEvent.name);
+                userEmailSetup.text = userEmailSetup.text.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
+
+                // replace email template variables
+                userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%SEATS%', newReservation.seats);
+                userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTNAME%' , theEvent.name);
+                userEmailSetup.textAlt = userEmailSetup.textAlt.replace('%EVENTDATE%' , moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
+
+                // shorten reservation url
+                var longUrl = 'http://reactor.reserver.net/reservations/userview/' + newReservation._id;
+
+                bitly.shorten(longUrl, function(err, response) {
+
+                  if (err) {
+                    
+                    console.log(err);
+                  
+                  } 
+
+                  // send email to user
+                  var short_url = response.data.url;
+
+                  if(!process.env.OPENSHIFT_APP_NAME) {
+                    
+                    short_url = 'http://localhost:8080/reservations/userview/' + newReservation._id;
+                  
+                  }
+
+                  //userEmailSetup.text = userEmailSetup.text.replace('%RESERVATIONURL%', short_url);
+
+                  var emailParams = null;
+
+                  // send mail to user
+                  if (reservation.waiting === 'true') {
+                    emailParams = {
+                      from: config.email,
+                      to: newReservation.email,
+                      subject: userEmailSetup.subjectAlt,
+                      html: userEmailSetup.textAlt
+                    }
+
+                  } else {
+
+                    emailParams = {
+                      from: config.email,
+                      to: newReservation.email,
+                      subject: userEmailSetup.subject,
+                      html: userEmailSetup.text
+                    }
+
+                  }
+
+                  transport.sendMail(emailParams, function (err, info) {
+                    console.log(err);
+                    console.log(info);
+                  });
+                
+                });
+                
+                // replace template variables
+                ownerEmailSetup.subject = ownerEmailSetup.subject.replace('%EVENTNAME%', theEvent.name);
+                ownerEmailSetup.text = ownerEmailSetup.text.replace('%SEATS%', newReservation.seats);
+                ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTNAME%', theEvent.name);
+                ownerEmailSetup.text = ownerEmailSetup.text.replace('%EVENTDATE%', moment(theEvent.date).format('dddd, Do MMMM YYYY, HH:mm'));
+                ownerEmailSetup.text = ownerEmailSetup.text.replace('%USEREMAIL%', newReservation.email);
+                ownerEmailSetup.text = ownerEmailSetup.text.replace('%USERNAME%', newReservation.name);
+
+                var ownerEmail = 'sebi.kovacs@gmail.com';
+
+                if (req.subdomains && req.subdomains.length === 1) {
+
+                  ownerEmail = 'rezervari.reactor@yahoo.ro';
+                
+                }
+
+                // send a mail to venue owner
+                transport.sendMail({
+                  from: config.email,
+                  to: ownerEmail,
+                  subject: ownerEmailSetup.subject,
+                  html: ownerEmailSetup.text
+                }, function (err, info) {
+                  
+                });
+
+                // add user to mailing list
+                if (newReservation.mclistid) {
+                  addUserToMailingList(newReservation);
+                }
+
+                // send response to client
+                res.json({
+                  message: 'Create successful.',
+                  reservation: newReservation
+                });
+
+              });
+
+            });
+          
+          } else {
+
+            res.status(400).json({msg: 'Ne pare rau. Numarul locurilor rezervate e mai mare decat numarul locurilor disponibile. Actualizati pagina pentru a vedea numarul exact al locurilor disponibile.'});
+
+          }
+
+        });
 
       }
 
@@ -336,7 +374,7 @@ module.exports = (function(config, db) {
   return {
     create: create,
     view: view,
-    update: update,
+    //update: update,
     reservationDelete: reservationDelete,
     userView: userView
   };
