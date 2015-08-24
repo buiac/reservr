@@ -87,8 +87,6 @@ module.exports = (function(config, db) {
     // if he does just update the number of seats
     // else proceed as before
 
-    // loop through all reservations
-
     db.reservations.find({
       email: email
     }).exec(function (err, reservations) {
@@ -99,7 +97,7 @@ module.exports = (function(config, db) {
           
           if (reservation.eventId === eventId) {
             
-            db.reservations.update( { eventId: eventId }, { $set: { seats: seats } }, {}, function (err, num) {
+            db.reservations.update( { eventId: eventId, email: email }, { $set: { seats: seats } }, {}, function (err, num) {
 
               if (num && num > 0) {
 
@@ -107,6 +105,8 @@ module.exports = (function(config, db) {
                   message: 'Create successful.',
                   reservation: reservation
                 });
+
+                // update number of empty seats
 
               }
 
